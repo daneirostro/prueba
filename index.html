@@ -1,18 +1,99 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi primera web</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Noticias - Lima, Perú</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* Mapa */
+        #map {
+            width: 100%;
+            height: calc(100vh - 80px);
+        }
+        
+        /* Controles del mapa personalizados */
+        .leaflet-control-attribution {
+            font-size: 11px;
+        }
+    </style>
 </head>
 <body>
-  <h1>¡Hola mundo! 🌎</h1>
-  <p>Esta es mi primera página web con HTML, CSS y JavaScript.</p>
-
-  <button id="boton">Haz clic aquí</button>
-  <p id="mensaje"></p>
-
-  <script src="script.js"></script>
+    <header>
+        <h1>📍 Mapa de Noticias Georreferenciadas</h1>
+        <p class="subtitle">Lima, Perú • Visualización de eventos periodísticos</p>
+    </header>
+    
+    <div id="map"></div>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Inicializar el mapa centrado en Lima
+        const map = L.map('map').setView([-12.0464, -77.0428], 12);
+        
+        // Añadir capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19,
+            minZoom: 10
+        }).addTo(map);
+        
+        // Añadir un marcador de ejemplo en el centro de Lima
+        const marcadorEjemplo = L.marker([-12.0464, -77.0428]).addTo(map);
+        marcadorEjemplo.bindPopup(`
+            <div style="font-family: sans-serif;">
+                <h3 style="margin: 0 0 10px 0; color: #667eea;">Centro de Lima</h3>
+                <p style="margin: 5px 0; font-size: 13px;">
+                    <strong>📍 Ubicación:</strong> Plaza Mayor<br>
+                    <strong>📅 Fecha:</strong> Ejemplo<br>
+                    <strong>📰 Medio:</strong> Demo
+                </p>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    Este es un marcador de ejemplo. Aquí aparecerán las noticias georreferenciadas.
+                </p>
+            </div>
+        `);
+        
+        // Controles adicionales
+        L.control.scale({
+            position: 'bottomleft',
+            imperial: false
+        }).addTo(map);
+    </script>
 </body>
 </html>
