@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Noticias - Lima, Perú</title>
     
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
+        /* (Tus estilos CSS aquí, se mantienen sin cambios) */
         * {
             margin: 0;
             padding: 0;
@@ -155,11 +155,7 @@
     
     <div id="map"></div>
     
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- PapaParse para leer CSV -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
     <script>
         // Inicializar el mapa centrado en Lima
@@ -207,96 +203,83 @@
             });
         }
         
-        // Función para crear popup
-        function crearPopup(ubicacion) {
+        // Función para crear popup (AHORA USA feature.properties)
+        function crearPopup(props) {
             return `
                 <div class="custom-popup">
-                    <h3>📍 ${ubicacion.ubicacion}</h3>
+                    <h3>📍 ${props.ubicacion}</h3>
                     <div class="info-row">
                         <strong>Tipo:</strong>
-                        <span class="badge ${ubicacion.tipo_evento}">${ubicacion.tipo_evento}</span>
+                        <span class="badge ${props.tipo_evento}">${props.tipo_evento}</span>
                     </div>
                     <div class="info-row">
-                        <strong>📅 Fecha:</strong> ${ubicacion.fecha || 'No especificada'}
+                        <strong>📅 Fecha:</strong> ${props.fecha || 'No especificada'}
                     </div>
                     <div class="info-row">
-                        <strong>📰 Medio:</strong> ${ubicacion.medio || 'Desconocido'}
+                        <strong>📰 Medio:</strong> ${props.medio || 'Desconocido'}
                     </div>
-                    ${ubicacion.actores ? `
+                    ${props.actores ? `
                         <div class="info-row">
-                            <strong>👥 Actores:</strong> ${ubicacion.actores}
+                            <strong>👥 Actores:</strong> ${props.actores}
                         </div>
                     ` : ''}
-                    ${ubicacion.contexto ? `
+                    ${props.contexto ? `
                         <div class="contexto">
-                            ${ubicacion.contexto}
+                            ${props.contexto}
                         </div>
                     ` : ''}
                 </div>
             `;
         }
         
-        // Cargar y procesar el CSV
-        const csvUrl = 'ubicaciones_extraidas.csv';
+        // Cargar y procesar el GeoJSON (¡NUEVO!)
+        const geoJsonUrl = 'ubicaciones_extraidas.geojson';
         
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                const datos = results.data;
-                
+        fetch(geoJsonUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al cargar el GeoJSON: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
                 // Ocultar loading
                 document.getElementById('loading').style.display = 'none';
                 
-                // Filtrar ubicaciones con coordenadas válidas
-                const ubicacionesValidas = datos.filter(row => 
-                    row.latitud && 
-                    row.longitud && 
-                    row.latitud !== 'desconocido' && 
-                    row.longitud !== 'desconocido' &&
-                    !isNaN(row.latitud) &&
-                    !isNaN(row.longitud)
-                );
+                // Procesar el GeoJSON con L.geoJSON
+                const geoJsonLayer = L.geoJSON(data, {
+                    // 1. Usar pointToLayer para definir el ícono de los puntos
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, { 
+                            icon: crearIcono(feature.properties.tipo_evento) 
+                        });
+                    },
+                    // 2. Usar onEachFeature para vincular el popup
+                    onEachFeature: function (feature, layer) {
+                        // Pasamos feature.properties a la función crearPopup
+                        layer.bindPopup(crearPopup(feature.properties));
+                    }
+                }).addTo(map);
                 
-                console.log(`Total de filas: ${datos.length}`);
-                console.log(`Ubicaciones válidas: ${ubicacionesValidas.length}`);
+                const totalPuntos = data.features.length;
                 
                 // Actualizar estadísticas
                 document.getElementById('stats').textContent = 
-                    `${ubicacionesValidas.length} ubicaciones mapeadas`;
-                
-                // Agregar marcadores al mapa
-                const marcadores = [];
-                ubicacionesValidas.forEach(ubicacion => {
-                    const marker = L.marker(
-                        [ubicacion.latitud, ubicacion.longitud],
-                        { icon: crearIcono(ubicacion.tipo_evento) }
-                    ).addTo(map);
-                    
-                    marker.bindPopup(crearPopup(ubicacion));
-                    marcadores.push([ubicacion.latitud, ubicacion.longitud]);
-                });
+                    `${totalPuntos} ubicaciones mapeadas`;
                 
                 // Ajustar vista del mapa para mostrar todos los marcadores
-                if (marcadores.length > 0) {
-                    const bounds = L.latLngBounds(marcadores);
-                    map.fitBounds(bounds, { padding: [50, 50] });
+                if (totalPuntos > 0) {
+                    map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
+                } else {
+                    alert('No se encontraron ubicaciones válidas en el archivo GeoJSON.');
                 }
-                
-                // Si no hay datos, mostrar mensaje
-                if (ubicacionesValidas.length === 0) {
-                    alert('No se encontraron ubicaciones con coordenadas válidas en el CSV.');
-                }
-            },
-            error: function(error) {
+            })
+            .catch(error => {
                 document.getElementById('loading').innerHTML = 
-                    '<p style="color: red;">❌ Error al cargar el archivo CSV</p>' +
-                    '<p style="font-size: 12px;">Verifica que el archivo existe en el repositorio</p>';
-                console.error('Error al cargar CSV:', error);
-            }
-        });
+                    '<p style="color: red;">❌ Error al cargar o procesar el GeoJSON</p>' +
+                    '<p style="font-size: 12px;">Verifica que el archivo existe y es válido.</p>';
+                console.error('Error al cargar GeoJSON:', error);
+            });
     </script>
 </body>
 </html>
