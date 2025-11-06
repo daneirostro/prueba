@@ -1,1 +1,6 @@
 id_fila,ubicacion,latitud,longitud,tipo_evento,actores,contexto,fecha,medio,fila_fuente
+1,Av. Arequipa,-13.2895997,-76.2523769,accidente,accidente,El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado,15 de marzo de 2024,El Comercio,1
+1,Av. Arequipa con Av. Javier Prado,desconocido,desconocido,accidente,,El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado,15 de marzo de 2024,El Comercio,1
+1,Av. Javier Prado,-11.8356467,-77.1233895,accidente,accidente,El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado,15 de marzo de 2024,El Comercio,1
+2,Lima,-12.0459808,-77.0305912,protesta,,Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima,Fecha no encontrada,La República,2
+2,Plaza San Martín del Centro,desconocido,desconocido,protesta,,Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima,Fecha no encontrada,La República,2
