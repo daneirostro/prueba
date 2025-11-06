@@ -1,0 +1,62 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -76.2523769,
+                    -13.2895997
+                ]
+            },
+            "properties": {
+                "ubicacion": "Av. Arequipa",
+                "tipo_evento": "accidente",
+                "actores": "accidente",
+                "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
+                "fecha": "15 de marzo de 2024",
+                "medio": "El Comercio",
+                "id_fila": 1
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1233895,
+                    -11.8356467
+                ]
+            },
+            "properties": {
+                "ubicacion": "Av. Javier Prado",
+                "tipo_evento": "accidente",
+                "actores": "accidente",
+                "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
+                "fecha": "15 de marzo de 2024",
+                "medio": "El Comercio",
+                "id_fila": 1
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.0305912,
+                    -12.0459808
+                ]
+            },
+            "properties": {
+                "ubicacion": "Lima",
+                "tipo_evento": "protesta",
+                "actores": null,
+                "contexto": "Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima",
+                "fecha": "Fecha no encontrada",
+                "medio": "La República",
+                "id_fila": 2
+            }
+        }
+    ]
+}
