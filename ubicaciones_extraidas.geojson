@@ -6,12 +6,12 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -76.2523769,
-                    -13.2895997
+                    -77.1233895,
+                    -11.8356467
                 ]
             },
             "properties": {
-                "ubicacion": "Av. Arequipa",
+                "ubicacion": "Av. Javier Prado",
                 "tipo_evento": "accidente",
                 "actores": "accidente",
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
@@ -25,12 +25,12 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.1233895,
-                    -11.8356467
+                    -76.2523769,
+                    -13.2895997
                 ]
             },
             "properties": {
-                "ubicacion": "Av. Javier Prado",
+                "ubicacion": "Av. Arequipa",
                 "tipo_evento": "accidente",
                 "actores": "accidente",
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
