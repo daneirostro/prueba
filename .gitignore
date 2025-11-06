@@ -1,0 +1,13 @@
+# No subir el archivo fuente de noticias
+fuente_noticias.csv
+
+# No subir el script de Python
+extractor.py
+
+# No subir archivos de checkpoint
+.procesamiento_checkpoint.txt
+
+# No subir archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
