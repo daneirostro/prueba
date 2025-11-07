@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,9 +7,10 @@
     <title>Mapa de Noticias - Lima, Perú</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     
     <style>
-        /* (Tus estilos CSS aquí, se mantienen sin cambios) */
         * {
             margin: 0;
             padding: 0;
@@ -20,7 +22,6 @@
             background-color: #f5f5f5;
         }
         
-        /* Header */
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -50,13 +51,11 @@
             font-size: 13px;
         }
         
-        /* Mapa */
         #map {
             width: 100%;
             height: calc(100vh - 80px);
         }
         
-        /* Loading */
         #loading {
             position: absolute;
             top: 50%;
@@ -85,7 +84,6 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Popup personalizado */
         .custom-popup {
             font-family: 'Segoe UI', sans-serif;
             min-width: 250px;
@@ -139,6 +137,103 @@
         .badge.emergencia { background: #fdd; color: #d00; }
         .badge.obra { background: #def; color: #06c; }
         .badge.otro { background: #eee; color: #666; }
+
+        /* Estilos para los marcadores personalizados */
+        .custom-marker {
+            background: white;
+            border: 3px solid #333;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .custom-marker:hover {
+            transform: scale(1.15);
+        }
+        
+        /* Colores de borde según tipo de evento */
+        .marker-delito { border-color: #dc3545; background: #fff5f5; }
+        .marker-accidente { border-color: #fd7e14; background: #fff8f0; }
+        .marker-protesta { border-color: #0d6efd; background: #f0f7ff; }
+        .marker-inauguracion { border-color: #198754; background: #f0fff4; }
+        .marker-emergencia { border-color: #a00; background: #ffe0e0; }
+        .marker-obra { border-color: #6610f2; background: #f8f0ff; }
+        .marker-politica { border-color: #0dcaf0; background: #f0fdff; }
+        .marker-salud { border-color: #20c997; background: #f0fff9; }
+        .marker-educacion { border-color: #ffc107; background: #fffbf0; }
+        .marker-otro { border-color: #6c757d; background: #f8f9fa; }
+
+        /* Leyenda del mapa */
+        .map-legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+            max-width: 200px;
+        }
+        
+        .map-legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            gap: 8px;
+        }
+        
+        .legend-icon {
+            font-size: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        #error-message {
+            display: none;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            z-index: 1000;
+            max-width: 500px;
+        }
+
+        #status-message {
+            display: none;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #d4edda;
+            color: #155724;
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            z-index: 1000;
+            max-width: 500px;
+        }
     </style>
 </head>
 <body>
@@ -153,133 +248,208 @@
         <p>Cargando ubicaciones...</p>
     </div>
     
+    <div id="error-message"></div>
+    <div id="status-message"></div>
+    
     <div id="map"></div>
+
+    <!-- Leyenda del mapa -->
+    <div class="map-legend">
+        <h4>🗺️ Tipos de Eventos</h4>
+        <div class="legend-item"><span class="legend-icon">🚨</span> Delito/Seguridad</div>
+        <div class="legend-item"><span class="legend-icon">🚗</span> Accidente</div>
+        <div class="legend-item"><span class="legend-icon">📢</span> Protesta</div>
+        <div class="legend-item"><span class="legend-icon">🎉</span> Inauguración</div>
+        <div class="legend-item"><span class="legend-icon">🚒</span> Emergencia</div>
+        <div class="legend-item"><span class="legend-icon">🏗️</span> Obra/Construcción</div>
+        <div class="legend-item"><span class="legend-icon">🏛️</span> Política</div>
+        <div class="legend-item"><span class="legend-icon">⚕️</span> Salud</div>
+        <div class="legend-item"><span class="legend-icon">📚</span> Educación</div>
+        <div class="legend-item"><span class="legend-icon">📍</span> Otro</div>
+    </div>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     
     <script>
         // Inicializar el mapa centrado en Lima
         const map = L.map('map').setView([-12.0464, -77.0428], 12);
-        
-        // Añadir capa de OpenStreetMap
+
+        // Inicializar el grupo de marcadores clusterizados
+        const markers = L.markerClusterGroup({
+            maxClusterRadius: 80 
+        }); 
+
+        // Añadir capa base de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            maxZoom: 19,
-            minZoom: 10
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         }).addTo(map);
-        
-        // Controles adicionales
-        L.control.scale({
-            position: 'bottomleft',
-            imperial: false
-        }).addTo(map);
-        
-        // Colores por tipo de evento
-        const coloresEventos = {
-            'accidente': '#e74c3c',
-            'delito': '#9b59b6',
-            'protesta': '#f39c12',
-            'inauguracion': '#27ae60',
-            'emergencia': '#c0392b',
-            'obra': '#3498db',
-            'otro': '#95a5a6'
-        };
-        
-        // Función para crear icono personalizado
-        function crearIcono(tipoEvento) {
-            const color = coloresEventos[tipoEvento] || coloresEventos['otro'];
-            return L.divIcon({
-                className: 'custom-marker',
-                html: `<div style="
-                    background-color: ${color};
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    border: 3px solid white;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-                "></div>`,
-                iconSize: [18, 18],
-                iconAnchor: [9, 9]
+
+        // Definir la URL del archivo GeoJSON
+        const geoJsonUrl = 'ubicaciones_extraidas.geojson';
+
+        // Función para obtener el emoji/ícono según el tipo de evento
+        function getIconoEvento(tipo) {
+            const iconos = {
+                'delito': '🚨',
+                'accidente': '🚗',
+                'protesta': '📢',
+                'inauguracion': '🎉',
+                'emergencia': '🚒',
+                'obra': '🏗️',
+                'politica': '🏛️',
+                'salud': '⚕️',
+                'educacion': '📚',
+                'transporte': '🚍',
+                'medio_ambiente': '🌳',
+                'cultural': '🎭',
+                'deportivo': '⚽',
+                'economico': '💼',
+                'incendio': '🔥',
+                'inundacion': '🌊',
+                'default': '📍'
+            };
+            
+            // Normalizar el tipo a minúsculas y buscar coincidencias parciales
+            const tipoNormalizado = tipo ? tipo.toLowerCase().trim() : '';
+            
+            // Buscar coincidencia exacta
+            if (iconos[tipoNormalizado]) {
+                return iconos[tipoNormalizado];
+            }
+            
+            // Buscar coincidencias parciales
+            for (const [key, value] of Object.entries(iconos)) {
+                if (tipoNormalizado.includes(key) || key.includes(tipoNormalizado)) {
+                    return value;
+                }
+            }
+            
+            return iconos.default;
+        }
+
+        // Función para obtener la clase CSS según el tipo de evento
+        function getClaseEvento(tipo) {
+            const tipoNormalizado = tipo ? tipo.toLowerCase().trim() : '';
+            
+            const clases = {
+                'delito': 'marker-delito',
+                'accidente': 'marker-accidente',
+                'protesta': 'marker-protesta',
+                'inauguracion': 'marker-inauguracion',
+                'emergencia': 'marker-emergencia',
+                'obra': 'marker-obra',
+                'politica': 'marker-politica',
+                'salud': 'marker-salud',
+                'educacion': 'marker-educacion'
+            };
+            
+            for (const [key, value] of Object.entries(clases)) {
+                if (tipoNormalizado.includes(key) || key.includes(tipoNormalizado)) {
+                    return value;
+                }
+            }
+            
+            return 'marker-otro';
+        }
+
+        // Función para crear el ícono personalizado
+        function crearIcono(tipo) {
+            const icono = getIconoEvento(tipo);
+            const clase = getClaseEvento(tipo);
+            
+            return L.divIcon({ 
+                className: 'custom-div-icon',
+                html: `<div class="custom-marker ${clase}">${icono}</div>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+                popupAnchor: [0, -40]
             });
         }
-        
-        // Función para crear popup (AHORA USA feature.properties)
+
+        // Función para crear el contenido del popup
         function crearPopup(props) {
+            const ubicacion = props.ubicacion || 'N/A';
+            const evento = props.tipo_evento || 'N/A';
+            const contexto = props.contexto || 'Sin contexto disponible';
+            const fecha = props.fecha || 'Sin fecha';
+            const medio = props.medio || 'Desconocido';
+            const actores = props.actores || 'N/A';
+
             return `
                 <div class="custom-popup">
-                    <h3>📍 ${props.ubicacion}</h3>
+                    <h3>${ubicacion}</h3>
                     <div class="info-row">
-                        <strong>Tipo:</strong>
-                        <span class="badge ${props.tipo_evento}">${props.tipo_evento}</span>
+                        <strong>Tipo:</strong> <span class="badge ${evento.toLowerCase()}">${evento}</span>
                     </div>
                     <div class="info-row">
-                        <strong>📅 Fecha:</strong> ${props.fecha || 'No especificada'}
+                        <strong>Actores:</strong> ${actores}
                     </div>
-                    <div class="info-row">
-                        <strong>📰 Medio:</strong> ${props.medio || 'Desconocido'}
+                    <div class="contexto">
+                        ${contexto}
                     </div>
-                    ${props.actores ? `
-                        <div class="info-row">
-                            <strong>👥 Actores:</strong> ${props.actores}
-                        </div>
-                    ` : ''}
-                    ${props.contexto ? `
-                        <div class="contexto">
-                            ${props.contexto}
-                        </div>
-                    ` : ''}
+                    <div class="info-row" style="margin-top: 10px; font-size: 11px; color: #888;">
+                        <strong>Fuente:</strong> ${medio}<br>
+                        <strong>Fecha:</strong> ${fecha}
+                    </div>
                 </div>
             `;
         }
-        
-        // Cargar y procesar el GeoJSON (¡NUEVO!)
-        const geoJsonUrl = 'ubicaciones_extraidas.geojson';
-        
+
+        // Cargar y procesar el archivo GeoJSON
         fetch(geoJsonUrl)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Error al cargar el GeoJSON: ' + response.statusText);
+                    throw new Error('Error al cargar el archivo GeoJSON. Verifica que existe.');
                 }
                 return response.json();
             })
             .then(data => {
-                // Ocultar loading
                 document.getElementById('loading').style.display = 'none';
-                
-                // Procesar el GeoJSON con L.geoJSON
+
                 const geoJsonLayer = L.geoJSON(data, {
-                    // 1. Usar pointToLayer para definir el ícono de los puntos
                     pointToLayer: function (feature, latlng) {
                         return L.marker(latlng, { 
                             icon: crearIcono(feature.properties.tipo_evento) 
                         });
                     },
-                    // 2. Usar onEachFeature para vincular el popup
                     onEachFeature: function (feature, layer) {
-                        // Pasamos feature.properties a la función crearPopup
                         layer.bindPopup(crearPopup(feature.properties));
                     }
-                }).addTo(map);
-                
+                }); 
+
+                // Añadir la capa al grupo de clusters
+                markers.addLayer(geoJsonLayer);
+
+                // Añadir el grupo de clusters al mapa
+                map.addLayer(markers);
+
                 const totalPuntos = data.features.length;
                 
-                // Actualizar estadísticas
-                document.getElementById('stats').textContent = 
-                    `${totalPuntos} ubicaciones mapeadas`;
+                document.getElementById('stats').innerHTML = `${totalPuntos} eventos`;
+                document.getElementById('status-message').innerHTML = `
+                    <strong>✅ Mapa cargado</strong> con ${totalPuntos} ubicaciones georreferenciadas.
+                `;
+                document.getElementById('status-message').style.display = 'block';
                 
-                // Ajustar vista del mapa para mostrar todos los marcadores
+                setTimeout(() => {
+                    document.getElementById('status-message').style.display = 'none';
+                }, 5000);
+                
+                // Ajustar la vista del mapa
                 if (totalPuntos > 0) {
-                    map.fitBounds(geoJsonLayer.getBounds(), { padding: [50, 50] });
-                } else {
-                    alert('No se encontraron ubicaciones válidas en el archivo GeoJSON.');
+                    map.fitBounds(markers.getBounds());
                 }
             })
             .catch(error => {
-                document.getElementById('loading').innerHTML = 
-                    '<p style="color: red;">❌ Error al cargar o procesar el GeoJSON</p>' +
-                    '<p style="font-size: 12px;">Verifica que el archivo existe y es válido.</p>';
-                console.error('Error al cargar GeoJSON:', error);
+                console.error("Error al cargar o procesar GeoJSON:", error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-message').innerHTML = `
+                    ❌ ${error.message}<br>
+                    <small>Asegúrate de que el archivo <strong>ubicaciones_extraidas.geojson</strong> existe y es válido.</small>
+                `;
+                document.getElementById('error-message').style.display = 'block';
             });
-    </script>
+    </script>  
 </body>
 </html>
