@@ -97,7 +97,7 @@
             background: white !important;
             border: none !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
             padding: 0 !important;
             font-family: 'Segoe UI', sans-serif;
             min-width: 280px;
@@ -106,8 +106,11 @@
             position: relative !important;
         }
 
-        .custom-tooltip::before {
-            border-top-color: white !important;
+        /* Flecha del tooltip apuntando hacia el marcador (izquierda) */
+        .leaflet-tooltip-right::before {
+            border-right-color: white !important;
+            left: -7px !important;
+            border-width: 8px 8px 8px 0 !important;
         }
 
         .tooltip-header {
@@ -428,7 +431,7 @@
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 120px;
+            bottom: 20px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -1083,12 +1086,13 @@
                         { icon: crearIcono(tipoOriginal) }
                     );
                     
-                    // Usar tooltip en lugar de popup
+                    // Usar tooltip en lugar de popup - proyectado hacia la derecha
                     marker.bindTooltip(crearTooltip(feature.properties), {
                         className: 'custom-tooltip',
-                        direction: 'top',
-                        offset: [0, -35],
-                        opacity: 1
+                        direction: 'right',  // Proyectar hacia la derecha
+                        offset: [15, 0],     // Separación desde el marcador
+                        opacity: 1,
+                        permanent: false
                     });
                     
                     // Guardar referencia del marker en la feature
