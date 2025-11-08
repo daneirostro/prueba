@@ -11,3 +11,6 @@ extractor.py
 __pycache__/
 *.pyc
 *.pyo
+
+# --- Archivos de Limpieza/QA (NUEVO) ---
+datos_para_revision.csv
