@@ -84,6 +84,15 @@
         }
         
         /* Estilos para tooltips personalizados */
+        .leaflet-tooltip-pane {
+            z-index: 9999 !important;
+        }
+
+        .leaflet-tooltip {
+            z-index: 9999 !important;
+            position: relative !important;
+        }
+
         .custom-tooltip {
             background: white !important;
             border: none !important;
@@ -93,11 +102,8 @@
             font-family: 'Segoe UI', sans-serif;
             min-width: 280px;
             max-width: 350px;
-            z-index: 10000 !important;
-        }
-
-        .leaflet-tooltip {
-            z-index: 10000 !important;
+            z-index: 9999 !important;
+            position: relative !important;
         }
 
         .custom-tooltip::before {
@@ -422,7 +428,7 @@
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 30px;
+            bottom: 120px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -691,6 +697,9 @@
         L.control.zoom({
             position: 'bottomright'
         }).addTo(map);
+
+        // Forzar z-index alto para el pane de tooltips
+        map.getPane('tooltipPane').style.zIndex = 9999;
 
         // Añadir capa base de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
