@@ -414,6 +414,141 @@
             left: auto !important;
         }
 
+        /* Control deslizante de tiempo */
+        .timeline-control {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            min-width: 500px;
+            max-width: 700px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .timeline-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .timeline-date-display {
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            background: #f0f2ff;
+            padding: 4px 12px;
+            border-radius: 5px;
+        }
+
+        .timeline-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-slider {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            outline: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .timeline-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .timeline-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .timeline-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .timeline-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .timeline-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .timeline-btn:hover {
+            background: #5568d3;
+        }
+
+        .timeline-btn.secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .timeline-btn.secondary:hover {
+            background: #d3d6da;
+        }
+
+        .timeline-stats {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+
         @media (max-width: 768px) {
             .layer-control {
                 top: 150px;
@@ -445,6 +580,22 @@
             .search-box button {
                 padding: 6px 12px;
                 font-size: 12px;
+            }
+
+            .timeline-control {
+                min-width: calc(100% - 20px);
+                left: 10px;
+                transform: none;
+                bottom: 20px;
+            }
+
+            .timeline-controls {
+                flex-wrap: wrap;
+            }
+
+            .timeline-btn {
+                font-size: 11px;
+                padding: 5px 10px;
             }
         }
     </style>
@@ -489,6 +640,30 @@
     </div>
     
     <div id="map"></div>
+
+    <!-- Control deslizante de tiempo -->
+    <div class="timeline-control">
+        <div class="timeline-header">
+            <div class="timeline-title">⏱️ Línea de Tiempo</div>
+            <div class="timeline-date-display" id="timeline-date-display">Todos los eventos</div>
+        </div>
+        <div class="timeline-slider-container">
+            <div class="timeline-controls">
+                <button class="timeline-btn secondary" onclick="resetTimeline()" title="Ver todos los eventos">
+                    🔄 Reset
+                </button>
+                <button class="timeline-btn" onclick="playTimeline()" id="play-btn">
+                    ▶️ Reproducir
+                </button>
+            </div>
+            <input type="range" class="timeline-slider" id="timeline-slider" min="0" max="100" value="100">
+        </div>
+        <div class="timeline-labels">
+            <span id="timeline-start-date">Cargando...</span>
+            <span id="timeline-end-date">Cargando...</span>
+        </div>
+        <div class="timeline-stats" id="timeline-stats">0 eventos visibles en este período</div>
+    </div>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -516,6 +691,10 @@
         const layerGroups = {};
         const layerCounts = {};
         let allMarkers = [];
+        let allFeatures = []; // Guardar todas las features con sus fechas
+        let minDate, maxDate;
+        let isPlaying = false;
+        let playInterval;
 
         // Configuración de tipos de eventos
         const eventTypes = {
@@ -652,6 +831,118 @@
             updateActiveCount();
         }
 
+        // Funciones del timeline
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            try {
+                // Intentar parsear diferentes formatos
+                const date = new Date(dateStr);
+                return isNaN(date) ? null : date;
+            } catch {
+                return null;
+            }
+        }
+
+        function formatDate(date) {
+            if (!date) return 'N/A';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('es-PE', options);
+        }
+
+        function updateTimelineDisplay() {
+            const slider = document.getElementById('timeline-slider');
+            const dateDisplay = document.getElementById('timeline-date-display');
+            const statsDisplay = document.getElementById('timeline-stats');
+            
+            if (!minDate || !maxDate) return;
+            
+            const percentage = slider.value / 100;
+            const totalMs = maxDate - minDate;
+            const currentMs = minDate.getTime() + (totalMs * percentage);
+            const currentDate = new Date(currentMs);
+            
+            // Actualizar display de fecha
+            if (percentage === 1) {
+                dateDisplay.textContent = 'Todos los eventos';
+            } else {
+                dateDisplay.textContent = formatDate(currentDate);
+            }
+            
+            // Filtrar y mostrar marcadores
+            let visibleCount = 0;
+            allFeatures.forEach(feature => {
+                const featureDate = parseDate(feature.properties.fecha);
+                if (!featureDate) return;
+                
+                const tipo = clasificarEvento(feature.properties.tipo_evento);
+                const marker = feature.marker;
+                
+                if (featureDate <= currentDate) {
+                    if (!layerGroups[tipo].hasLayer(marker)) {
+                        layerGroups[tipo].addLayer(marker);
+                    }
+                    visibleCount++;
+                } else {
+                    if (layerGroups[tipo].hasLayer(marker)) {
+                        layerGroups[tipo].removeLayer(marker);
+                    }
+                }
+            });
+            
+            statsDisplay.textContent = `${visibleCount} eventos visibles en este período`;
+        }
+
+        function resetTimeline() {
+            const slider = document.getElementById('timeline-slider');
+            slider.value = 100;
+            stopTimeline();
+            updateTimelineDisplay();
+        }
+
+        function playTimeline() {
+            const btn = document.getElementById('play-btn');
+            const slider = document.getElementById('timeline-slider');
+            
+            if (isPlaying) {
+                stopTimeline();
+            } else {
+                isPlaying = true;
+                btn.innerHTML = '⏸️ Pausar';
+                
+                // Reiniciar desde el inicio si está al final
+                if (slider.value >= 99) {
+                    slider.value = 0;
+                }
+                
+                playInterval = setInterval(() => {
+                    slider.value = parseInt(slider.value) + 1;
+                    updateTimelineDisplay();
+                    
+                    if (slider.value >= 100) {
+                        stopTimeline();
+                    }
+                }, 100); // Velocidad de reproducción
+            }
+        }
+
+        function stopTimeline() {
+            isPlaying = false;
+            const btn = document.getElementById('play-btn');
+            btn.innerHTML = '▶️ Reproducir';
+            if (playInterval) {
+                clearInterval(playInterval);
+            }
+        }
+
+        // Event listener para el slider
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('timeline-slider');
+            slider.addEventListener('input', () => {
+                stopTimeline();
+                updateTimelineDisplay();
+            });
+        });
+
         // Función para crear el panel de control
         function createLayerControl() {
             const container = document.getElementById('layer-items');
@@ -710,6 +1001,13 @@
                     // Incrementar contador
                     layerCounts[tipoClasificado]++;
                     
+                    // Parsear fecha para el timeline
+                    const featureDate = parseDate(feature.properties.fecha);
+                    if (featureDate) {
+                        if (!minDate || featureDate < minDate) minDate = featureDate;
+                        if (!maxDate || featureDate > maxDate) maxDate = featureDate;
+                    }
+                    
                     // Crear marcador
                     const marker = L.marker(
                         [feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 
@@ -724,9 +1022,13 @@
                         opacity: 1
                     });
                     
+                    // Guardar referencia del marker en la feature
+                    feature.marker = marker;
+                    
                     // Añadir al grupo correspondiente
                     layerGroups[tipoClasificado].addLayer(marker);
                     allMarkers.push(marker);
+                    allFeatures.push(feature);
                 });
 
                 // Añadir todas las capas al mapa inicialmente
@@ -736,6 +1038,15 @@
 
                 // Crear el panel de control
                 createLayerControl();
+
+                // Configurar el timeline
+                if (minDate && maxDate) {
+                    document.getElementById('timeline-start-date').textContent = formatDate(minDate);
+                    document.getElementById('timeline-end-date').textContent = formatDate(maxDate);
+                    updateTimelineDisplay();
+                } else {
+                    document.querySelector('.timeline-control').style.display = 'none';
+                }
 
                 const totalPuntos = data.features.length;
                 
