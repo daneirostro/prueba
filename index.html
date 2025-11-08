@@ -173,7 +173,7 @@
         .layer-control {
             position: absolute;
             top: 100px;
-            right: 10px;
+            left: 10px;
             background: white;
             padding: 15px;
             border-radius: 8px;
@@ -310,7 +310,7 @@
             display: none;
             position: absolute;
             top: 100px;
-            right: 10px;
+            left: 10px;
             background: white;
             padding: 10px 15px;
             border-radius: 8px;
@@ -321,9 +321,71 @@
             font-weight: 600;
         }
 
+        /* Caja de búsqueda */
+        .search-box {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 350px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: #667eea;
+        }
+
+        .search-box button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .search-box button:hover {
+            background: #5568d3;
+        }
+
+        .search-icon {
+            font-size: 18px;
+            color: #667eea;
+        }
+
+        /* Controles de zoom personalizados */
+        .leaflet-control-zoom {
+            position: absolute !important;
+            bottom: 30px !important;
+            right: 10px !important;
+            top: auto !important;
+            left: auto !important;
+        }
+
         @media (max-width: 768px) {
             .layer-control {
                 top: 150px;
+                left: 10px;
                 max-width: calc(100% - 20px);
                 display: none;
             }
@@ -334,6 +396,23 @@
 
             .toggle-layers {
                 display: block;
+            }
+
+            .search-box {
+                top: 90px;
+                min-width: calc(100% - 20px);
+                left: 10px;
+                transform: none;
+            }
+
+            .search-box input {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .search-box button {
+                padding: 6px 12px;
+                font-size: 12px;
             }
         }
     </style>
@@ -357,6 +436,13 @@
         🗂️ Filtros
     </div>
 
+    <!-- Caja de búsqueda -->
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Buscar por ubicación, tipo de evento o fecha...">
+        <button onclick="alert('Función de búsqueda en desarrollo')">Buscar</button>
+    </div>
+
     <!-- Panel de control de capas -->
     <div class="layer-control" id="layer-control">
         <h4>
@@ -377,7 +463,14 @@
     
     <script>
         // Inicializar el mapa centrado en Lima
-        const map = L.map('map').setView([-12.0464, -77.0428], 12);
+        const map = L.map('map', {
+            zoomControl: false // Desactivar controles de zoom por defecto
+        }).setView([-12.0464, -77.0428], 12);
+
+        // Añadir controles de zoom en la posición personalizada (abajo-derecha)
+        L.control.zoom({
+            position: 'bottomright'
+        }).addTo(map);
 
         // Añadir capa base de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
