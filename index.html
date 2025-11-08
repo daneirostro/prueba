@@ -93,6 +93,11 @@
             font-family: 'Segoe UI', sans-serif;
             min-width: 280px;
             max-width: 350px;
+            z-index: 10000 !important;
+        }
+
+        .leaflet-tooltip {
+            z-index: 10000 !important;
         }
 
         .custom-tooltip::before {
@@ -418,21 +423,20 @@
         .timeline-control {
             position: absolute;
             bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 10px;
             background: white;
             padding: 15px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
-            min-width: 500px;
-            max-width: 700px;
+            width: 280px;
+            max-width: 280px;
         }
 
         .timeline-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
             margin-bottom: 10px;
         }
 
@@ -443,18 +447,19 @@
         }
 
         .timeline-date-display {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             color: #667eea;
             background: #f0f2ff;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 5px;
+            text-align: center;
         }
 
         .timeline-slider-container {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            gap: 10px;
             margin-bottom: 8px;
         }
 
@@ -510,23 +515,26 @@
 
         .timeline-controls {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
+            width: 100%;
         }
 
         .timeline-btn {
             background: #667eea;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             transition: background 0.2s;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            gap: 4px;
+            flex: 1;
         }
 
         .timeline-btn:hover {
@@ -543,10 +551,14 @@
         }
 
         .timeline-stats {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
             text-align: center;
             margin-top: 5px;
+        }
+
+        .timeline-slider {
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -584,8 +596,9 @@
 
             .timeline-control {
                 min-width: calc(100% - 20px);
+                max-width: calc(100% - 20px);
+                width: calc(100% - 20px);
                 left: 10px;
-                transform: none;
                 bottom: 20px;
             }
 
@@ -648,15 +661,15 @@
             <div class="timeline-date-display" id="timeline-date-display">Todos los eventos</div>
         </div>
         <div class="timeline-slider-container">
+            <input type="range" class="timeline-slider" id="timeline-slider" min="0" max="100" value="100">
             <div class="timeline-controls">
                 <button class="timeline-btn secondary" onclick="resetTimeline()" title="Ver todos los eventos">
-                    🔄 Reset
+                    🔄
                 </button>
                 <button class="timeline-btn" onclick="playTimeline()" id="play-btn">
-                    ▶️ Reproducir
+                    ▶️
                 </button>
             </div>
-            <input type="range" class="timeline-slider" id="timeline-slider" min="0" max="100" value="100">
         </div>
         <div class="timeline-labels">
             <span id="timeline-start-date">Cargando...</span>
@@ -952,7 +965,8 @@
                 stopTimeline();
             } else {
                 isPlaying = true;
-                btn.innerHTML = '⏸️ Pausar';
+                btn.innerHTML = '⏸️';
+                btn.title = 'Pausar';
                 
                 // Reiniciar desde el inicio si está al final
                 if (slider.value >= 99) {
@@ -973,7 +987,8 @@
         function stopTimeline() {
             isPlaying = false;
             const btn = document.getElementById('play-btn');
-            btn.innerHTML = '▶️ Reproducir';
+            btn.innerHTML = '▶️';
+            btn.title = 'Reproducir';
             if (playInterval) {
                 clearInterval(playInterval);
             }
