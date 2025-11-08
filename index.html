@@ -83,41 +83,73 @@
             100% { transform: rotate(360deg); }
         }
         
-        .custom-popup {
+        /* Estilos para tooltips personalizados */
+        .custom-tooltip {
+            background: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25) !important;
+            padding: 0 !important;
             font-family: 'Segoe UI', sans-serif;
-            min-width: 250px;
+            min-width: 280px;
+            max-width: 350px;
         }
-        
-        .custom-popup h3 {
-            margin: 0 0 12px 0;
-            color: #333;
-            font-size: 16px;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 8px;
+
+        .custom-tooltip::before {
+            border-top-color: white !important;
         }
-        
-        .custom-popup .info-row {
-            margin: 8px 0;
-            font-size: 13px;
-            line-height: 1.5;
+
+        .tooltip-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 12px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 14px;
         }
-        
-        .custom-popup .info-row strong {
+
+        .tooltip-body {
+            padding: 12px;
+        }
+
+        .tooltip-row {
+            margin: 6px 0;
+            font-size: 12px;
+            line-height: 1.4;
+            display: flex;
+            gap: 8px;
+        }
+
+        .tooltip-row strong {
             color: #555;
-            display: inline-block;
-            min-width: 80px;
+            min-width: 60px;
+            flex-shrink: 0;
         }
-        
-        .custom-popup .contexto {
-            margin-top: 12px;
-            padding: 10px;
+
+        .tooltip-row span {
+            color: #333;
+            flex: 1;
+        }
+
+        .tooltip-contexto {
+            margin-top: 10px;
+            padding: 8px;
             background: #f8f9fa;
             border-radius: 5px;
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
-            font-style: italic;
-            max-height: 100px;
+            line-height: 1.4;
+            max-height: 80px;
             overflow-y: auto;
+            font-style: italic;
+        }
+
+        .tooltip-footer {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e9ecef;
+            font-size: 10px;
+            color: #999;
         }
         
         .badge {
@@ -541,8 +573,8 @@
             });
         }
 
-        // Función para crear el contenido del popup
-        function crearPopup(props) {
+        // Función para crear el contenido del tooltip
+        function crearTooltip(props) {
             const ubicacion = props.ubicacion || 'N/A';
             const evento = props.tipo_evento || 'N/A';
             const contexto = props.contexto || 'Sin contexto disponible';
@@ -550,21 +582,29 @@
             const medio = props.medio || 'Desconocido';
             const actores = props.actores || 'N/A';
 
+            // Truncar contexto si es muy largo
+            const contextoCorto = contexto.length > 150 
+                ? contexto.substring(0, 150) + '...' 
+                : contexto;
+
             return `
-                <div class="custom-popup">
-                    <h3>${ubicacion}</h3>
-                    <div class="info-row">
-                        <strong>Tipo:</strong> <span class="badge ${evento.toLowerCase()}">${evento}</span>
+                <div class="tooltip-header">
+                    📍 ${ubicacion}
+                </div>
+                <div class="tooltip-body">
+                    <div class="tooltip-row">
+                        <strong>Tipo:</strong>
+                        <span class="badge ${evento.toLowerCase()}">${evento}</span>
                     </div>
-                    <div class="info-row">
-                        <strong>Actores:</strong> ${actores}
+                    <div class="tooltip-row">
+                        <strong>Actores:</strong>
+                        <span>${actores}</span>
                     </div>
-                    <div class="contexto">
-                        ${contexto}
+                    <div class="tooltip-contexto">
+                        ${contextoCorto}
                     </div>
-                    <div class="info-row" style="margin-top: 10px; font-size: 11px; color: #888;">
-                        <strong>Fuente:</strong> ${medio}<br>
-                        <strong>Fecha:</strong> ${fecha}
+                    <div class="tooltip-footer">
+                        <strong>Fuente:</strong> ${medio} • <strong>Fecha:</strong> ${fecha}
                     </div>
                 </div>
             `;
@@ -676,7 +716,13 @@
                         { icon: crearIcono(tipoOriginal) }
                     );
                     
-                    marker.bindPopup(crearPopup(feature.properties));
+                    // Usar tooltip en lugar de popup
+                    marker.bindTooltip(crearTooltip(feature.properties), {
+                        className: 'custom-tooltip',
+                        direction: 'top',
+                        offset: [0, -35],
+                        opacity: 1
+                    });
                     
                     // Añadir al grupo correspondiente
                     layerGroups[tipoClasificado].addLayer(marker);
