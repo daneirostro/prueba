@@ -835,10 +835,55 @@
         function parseDate(dateStr) {
             if (!dateStr) return null;
             try {
-                // Intentar parsear diferentes formatos
-                const date = new Date(dateStr);
-                return isNaN(date) ? null : date;
-            } catch {
+                // Mapa de meses en español
+                const meses = {
+                    'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3,
+                    'mayo': 4, 'junio': 5, 'julio': 6, 'agosto': 7,
+                    'septiembre': 9, 'octubre': 10, 'noviembre': 11, 'diciembre': 12
+                };
+                
+                let date;
+                
+                // Formato: "20 de marzo de 2024" o "15 de marzo"
+                const regexEspanol = /(\d{1,2})\s+de\s+(\w+)(?:\s+de\s+(\d{4}))?/i;
+                const matchEspanol = dateStr.match(regexEspanol);
+                
+                if (matchEspanol) {
+                    const dia = parseInt(matchEspanol[1]);
+                    const mesNombre = matchEspanol[2].toLowerCase();
+                    const año = matchEspanol[3] ? parseInt(matchEspanol[3]) : new Date().getFullYear();
+                    
+                    if (meses.hasOwnProperty(mesNombre)) {
+                        date = new Date(año, meses[mesNombre], dia);
+                        console.log(`Fecha parseada: "${dateStr}" → ${date.toLocaleDateString('es-PE')}`);
+                        return date;
+                    }
+                }
+                
+                // Si viene en formato ISO o YYYY-MM-DD
+                if (dateStr.includes('-')) {
+                    date = new Date(dateStr);
+                } 
+                // Si viene en formato DD/MM/YYYY
+                else if (dateStr.includes('/')) {
+                    const parts = dateStr.split('/');
+                    if (parts.length === 3) {
+                        date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    }
+                }
+                else {
+                    date = new Date(dateStr);
+                }
+                
+                if (date && !isNaN(date.getTime())) {
+                    console.log(`Fecha parseada: "${dateStr}" → ${date.toLocaleDateString('es-PE')}`);
+                    return date;
+                }
+                
+                console.warn('No se pudo parsear la fecha:', dateStr);
+                return null;
+            } catch (e) {
+                console.error('Error parseando fecha:', dateStr, e);
                 return null;
             }
         }
@@ -1039,16 +1084,27 @@
                 // Crear el panel de control
                 createLayerControl();
 
+                const totalPuntos = data.features.length;
+
                 // Configurar el timeline
                 if (minDate && maxDate) {
                     document.getElementById('timeline-start-date').textContent = formatDate(minDate);
                     document.getElementById('timeline-end-date').textContent = formatDate(maxDate);
-                    updateTimelineDisplay();
+                    document.getElementById('timeline-stats').textContent = `${totalPuntos} eventos en total`;
+                    console.log('Timeline configurado:', {
+                        minDate: formatDate(minDate),
+                        maxDate: formatDate(maxDate),
+                        totalEventos: totalPuntos
+                    });
                 } else {
-                    document.querySelector('.timeline-control').style.display = 'none';
+                    // Si no hay fechas válidas, mostrar advertencia pero mantener visible
+                    document.getElementById('timeline-start-date').textContent = 'Sin fechas';
+                    document.getElementById('timeline-end-date').textContent = 'Sin fechas';
+                    document.getElementById('timeline-stats').textContent = 'No hay fechas válidas en los datos';
+                    document.querySelector('.timeline-slider').disabled = true;
+                    document.getElementById('play-btn').disabled = true;
+                    console.warn('No se encontraron fechas válidas en los datos');
                 }
-
-                const totalPuntos = data.features.length;
                 
                 document.getElementById('status-message').innerHTML = `
                     <strong>✅ Mapa cargado</strong> con ${totalPuntos} ubicaciones georreferenciadas.
