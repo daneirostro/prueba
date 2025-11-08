@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -170,39 +169,110 @@
         .marker-educacion { border-color: #ffc107; background: #fffbf0; }
         .marker-otro { border-color: #6c757d; background: #f8f9fa; }
 
-        /* Leyenda del mapa */
-        .map-legend {
+        /* Panel de control de capas */
+        .layer-control {
             position: absolute;
-            bottom: 30px;
+            top: 100px;
             right: 10px;
             background: white;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
-            font-size: 12px;
-            max-width: 200px;
+            max-width: 280px;
+            max-height: calc(100vh - 220px);
+            overflow-y: auto;
         }
         
-        .map-legend h4 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
+        .layer-control h4 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
             color: #333;
             border-bottom: 2px solid #667eea;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .legend-item {
+        .layer-item {
             display: flex;
             align-items: center;
-            margin: 5px 0;
-            gap: 8px;
+            margin: 8px 0;
+            padding: 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
         }
         
-        .legend-icon {
-            font-size: 18px;
-            width: 25px;
+        .layer-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .layer-item input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .layer-item-icon {
+            font-size: 20px;
+            margin-right: 8px;
+            width: 28px;
             text-align: center;
+        }
+        
+        .layer-item-text {
+            flex: 1;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .layer-item-count {
+            font-size: 11px;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .control-buttons button {
+            flex: 1;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-all {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-all:hover {
+            background: #5568d3;
+        }
+
+        .btn-none {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-none:hover {
+            background: #d3d6da;
         }
 
         #error-message {
@@ -234,6 +304,38 @@
             z-index: 1000;
             max-width: 500px;
         }
+
+        /* Toggle button para móvil */
+        .toggle-layers {
+            display: none;
+            position: absolute;
+            top: 100px;
+            right: 10px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 999;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .layer-control {
+                top: 150px;
+                max-width: calc(100% - 20px);
+                display: none;
+            }
+
+            .layer-control.active {
+                display: block;
+            }
+
+            .toggle-layers {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
@@ -251,22 +353,24 @@
     <div id="error-message"></div>
     <div id="status-message"></div>
     
-    <div id="map"></div>
-
-    <!-- Leyenda del mapa -->
-    <div class="map-legend">
-        <h4>🗺️ Tipos de Eventos</h4>
-        <div class="legend-item"><span class="legend-icon">🚨</span> Delito/Seguridad</div>
-        <div class="legend-item"><span class="legend-icon">🚗</span> Accidente</div>
-        <div class="legend-item"><span class="legend-icon">📢</span> Protesta</div>
-        <div class="legend-item"><span class="legend-icon">🎉</span> Inauguración</div>
-        <div class="legend-item"><span class="legend-icon">🚒</span> Emergencia</div>
-        <div class="legend-item"><span class="legend-icon">🏗️</span> Obra/Construcción</div>
-        <div class="legend-item"><span class="legend-icon">🏛️</span> Política</div>
-        <div class="legend-item"><span class="legend-icon">⚕️</span> Salud</div>
-        <div class="legend-item"><span class="legend-icon">📚</span> Educación</div>
-        <div class="legend-item"><span class="legend-icon">📍</span> Otro</div>
+    <div class="toggle-layers" onclick="document.querySelector('.layer-control').classList.toggle('active')">
+        🗂️ Filtros
     </div>
+
+    <!-- Panel de control de capas -->
+    <div class="layer-control" id="layer-control">
+        <h4>
+            🗂️ Filtrar Eventos
+            <span id="active-count" style="font-size: 11px; font-weight: normal;">0/0</span>
+        </h4>
+        <div id="layer-items"></div>
+        <div class="control-buttons">
+            <button class="btn-all" onclick="toggleAllLayers(true)">✓ Todos</button>
+            <button class="btn-none" onclick="toggleAllLayers(false)">✗ Ninguno</button>
+        </div>
+    </div>
+    
+    <div id="map"></div>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -274,11 +378,6 @@
     <script>
         // Inicializar el mapa centrado en Lima
         const map = L.map('map').setView([-12.0464, -77.0428], 12);
-
-        // Inicializar el grupo de marcadores clusterizados
-        const markers = L.markerClusterGroup({
-            maxClusterRadius: 80 
-        }); 
 
         // Añadir capa base de OpenStreetMap
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -288,79 +387,61 @@
         // Definir la URL del archivo GeoJSON
         const geoJsonUrl = 'ubicaciones_extraidas.geojson';
 
-        // Función para obtener el emoji/ícono según el tipo de evento
-        function getIconoEvento(tipo) {
-            const iconos = {
-                'delito': '🚨',
-                'accidente': '🚗',
-                'protesta': '📢',
-                'inauguracion': '🎉',
-                'emergencia': '🚒',
-                'obra': '🏗️',
-                'politica': '🏛️',
-                'salud': '⚕️',
-                'educacion': '📚',
-                'transporte': '🚍',
-                'medio_ambiente': '🌳',
-                'cultural': '🎭',
-                'deportivo': '⚽',
-                'economico': '💼',
-                'incendio': '🔥',
-                'inundacion': '🌊',
-                'default': '📍'
-            };
+        // Objeto para almacenar las capas por categoría
+        const layerGroups = {};
+        const layerCounts = {};
+        let allMarkers = [];
+
+        // Configuración de tipos de eventos
+        const eventTypes = {
+            'delito': { icon: '🚨', name: 'Delito/Seguridad', color: 'marker-delito' },
+            'accidente': { icon: '🚗', name: 'Accidente', color: 'marker-accidente' },
+            'protesta': { icon: '📢', name: 'Protesta', color: 'marker-protesta' },
+            'inauguracion': { icon: '🎉', name: 'Inauguración', color: 'marker-inauguracion' },
+            'emergencia': { icon: '🚒', name: 'Emergencia', color: 'marker-emergencia' },
+            'obra': { icon: '🏗️', name: 'Obra/Construcción', color: 'marker-obra' },
+            'politica': { icon: '🏛️', name: 'Política', color: 'marker-politica' },
+            'salud': { icon: '⚕️', name: 'Salud', color: 'marker-salud' },
+            'educacion': { icon: '📚', name: 'Educación', color: 'marker-educacion' },
+            'transporte': { icon: '🚍', name: 'Transporte', color: 'marker-otro' },
+            'medio_ambiente': { icon: '🌳', name: 'Medio Ambiente', color: 'marker-otro' },
+            'cultural': { icon: '🎭', name: 'Cultural', color: 'marker-otro' },
+            'deportivo': { icon: '⚽', name: 'Deportivo', color: 'marker-otro' },
+            'economico': { icon: '💼', name: 'Económico', color: 'marker-otro' },
+            'incendio': { icon: '🔥', name: 'Incendio', color: 'marker-emergencia' },
+            'inundacion': { icon: '🌊', name: 'Inundación', color: 'marker-emergencia' },
+            'otro': { icon: '📍', name: 'Otro', color: 'marker-otro' }
+        };
+
+        // Función para clasificar el tipo de evento
+        function clasificarEvento(tipo) {
+            if (!tipo) return 'otro';
             
-            // Normalizar el tipo a minúsculas y buscar coincidencias parciales
-            const tipoNormalizado = tipo ? tipo.toLowerCase().trim() : '';
+            const tipoNormalizado = tipo.toLowerCase().trim();
             
             // Buscar coincidencia exacta
-            if (iconos[tipoNormalizado]) {
-                return iconos[tipoNormalizado];
+            if (eventTypes[tipoNormalizado]) {
+                return tipoNormalizado;
             }
             
             // Buscar coincidencias parciales
-            for (const [key, value] of Object.entries(iconos)) {
+            for (const key of Object.keys(eventTypes)) {
                 if (tipoNormalizado.includes(key) || key.includes(tipoNormalizado)) {
-                    return value;
+                    return key;
                 }
             }
             
-            return iconos.default;
-        }
-
-        // Función para obtener la clase CSS según el tipo de evento
-        function getClaseEvento(tipo) {
-            const tipoNormalizado = tipo ? tipo.toLowerCase().trim() : '';
-            
-            const clases = {
-                'delito': 'marker-delito',
-                'accidente': 'marker-accidente',
-                'protesta': 'marker-protesta',
-                'inauguracion': 'marker-inauguracion',
-                'emergencia': 'marker-emergencia',
-                'obra': 'marker-obra',
-                'politica': 'marker-politica',
-                'salud': 'marker-salud',
-                'educacion': 'marker-educacion'
-            };
-            
-            for (const [key, value] of Object.entries(clases)) {
-                if (tipoNormalizado.includes(key) || key.includes(tipoNormalizado)) {
-                    return value;
-                }
-            }
-            
-            return 'marker-otro';
+            return 'otro';
         }
 
         // Función para crear el ícono personalizado
-        function crearIcono(tipo) {
-            const icono = getIconoEvento(tipo);
-            const clase = getClaseEvento(tipo);
+        function crearIcono(tipoEvento) {
+            const tipo = clasificarEvento(tipoEvento);
+            const config = eventTypes[tipo] || eventTypes.otro;
             
             return L.divIcon({ 
                 className: 'custom-div-icon',
-                html: `<div class="custom-marker ${clase}">${icono}</div>`,
+                html: `<div class="custom-marker ${config.color}">${config.icon}</div>`,
                 iconSize: [40, 40],
                 iconAnchor: [20, 40],
                 popupAnchor: [0, -40]
@@ -396,6 +477,79 @@
             `;
         }
 
+        // Función para actualizar el contador de capas activas
+        function updateActiveCount() {
+            const activeCount = Object.values(layerGroups).filter(g => map.hasLayer(g)).length;
+            const totalCount = Object.keys(layerGroups).length;
+            document.getElementById('active-count').textContent = `${activeCount}/${totalCount}`;
+            
+            // Actualizar stats en header
+            let visibleMarkers = 0;
+            Object.keys(layerGroups).forEach(tipo => {
+                if (map.hasLayer(layerGroups[tipo])) {
+                    visibleMarkers += layerCounts[tipo] || 0;
+                }
+            });
+            document.getElementById('stats').innerHTML = `${visibleMarkers} eventos visibles`;
+        }
+
+        // Función para toggle de capas individuales
+        function toggleLayer(tipo, checkbox) {
+            if (checkbox.checked) {
+                map.addLayer(layerGroups[tipo]);
+            } else {
+                map.removeLayer(layerGroups[tipo]);
+            }
+            updateActiveCount();
+        }
+
+        // Función para activar/desactivar todas las capas
+        function toggleAllLayers(show) {
+            Object.keys(layerGroups).forEach(tipo => {
+                const checkbox = document.getElementById(`layer-${tipo}`);
+                if (checkbox) {
+                    checkbox.checked = show;
+                    if (show) {
+                        map.addLayer(layerGroups[tipo]);
+                    } else {
+                        map.removeLayer(layerGroups[tipo]);
+                    }
+                }
+            });
+            updateActiveCount();
+        }
+
+        // Función para crear el panel de control
+        function createLayerControl() {
+            const container = document.getElementById('layer-items');
+            container.innerHTML = '';
+            
+            // Ordenar tipos por cantidad (descendente)
+            const sortedTypes = Object.keys(layerCounts).sort((a, b) => {
+                return layerCounts[b] - layerCounts[a];
+            });
+            
+            sortedTypes.forEach(tipo => {
+                const config = eventTypes[tipo];
+                if (!config) return;
+                
+                const count = layerCounts[tipo] || 0;
+                
+                const item = document.createElement('div');
+                item.className = 'layer-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="layer-${tipo}" checked onchange="toggleLayer('${tipo}', this)">
+                    <span class="layer-item-icon">${config.icon}</span>
+                    <span class="layer-item-text">${config.name}</span>
+                    <span class="layer-item-count">${count}</span>
+                `;
+                
+                container.appendChild(item);
+            });
+            
+            updateActiveCount();
+        }
+
         // Cargar y procesar el archivo GeoJSON
         fetch(geoJsonUrl)
             .then(response => {
@@ -407,26 +561,45 @@
             .then(data => {
                 document.getElementById('loading').style.display = 'none';
 
-                const geoJsonLayer = L.geoJSON(data, {
-                    pointToLayer: function (feature, latlng) {
-                        return L.marker(latlng, { 
-                            icon: crearIcono(feature.properties.tipo_evento) 
-                        });
-                    },
-                    onEachFeature: function (feature, layer) {
-                        layer.bindPopup(crearPopup(feature.properties));
-                    }
-                }); 
+                // Inicializar grupos de capas
+                Object.keys(eventTypes).forEach(tipo => {
+                    layerGroups[tipo] = L.markerClusterGroup({
+                        maxClusterRadius: 60
+                    });
+                    layerCounts[tipo] = 0;
+                });
 
-                // Añadir la capa al grupo de clusters
-                markers.addLayer(geoJsonLayer);
+                // Procesar cada feature
+                data.features.forEach(feature => {
+                    const tipoOriginal = feature.properties.tipo_evento;
+                    const tipoClasificado = clasificarEvento(tipoOriginal);
+                    
+                    // Incrementar contador
+                    layerCounts[tipoClasificado]++;
+                    
+                    // Crear marcador
+                    const marker = L.marker(
+                        [feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 
+                        { icon: crearIcono(tipoOriginal) }
+                    );
+                    
+                    marker.bindPopup(crearPopup(feature.properties));
+                    
+                    // Añadir al grupo correspondiente
+                    layerGroups[tipoClasificado].addLayer(marker);
+                    allMarkers.push(marker);
+                });
 
-                // Añadir el grupo de clusters al mapa
-                map.addLayer(markers);
+                // Añadir todas las capas al mapa inicialmente
+                Object.values(layerGroups).forEach(group => {
+                    map.addLayer(group);
+                });
+
+                // Crear el panel de control
+                createLayerControl();
 
                 const totalPuntos = data.features.length;
                 
-                document.getElementById('stats').innerHTML = `${totalPuntos} eventos`;
                 document.getElementById('status-message').innerHTML = `
                     <strong>✅ Mapa cargado</strong> con ${totalPuntos} ubicaciones georreferenciadas.
                 `;
@@ -437,8 +610,9 @@
                 }, 5000);
                 
                 // Ajustar la vista del mapa
-                if (totalPuntos > 0) {
-                    map.fitBounds(markers.getBounds());
+                if (allMarkers.length > 0) {
+                    const bounds = L.latLngBounds(allMarkers.map(m => m.getLatLng()));
+                    map.fitBounds(bounds);
                 }
             })
             .catch(error => {
