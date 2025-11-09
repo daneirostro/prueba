@@ -166,9 +166,11 @@
             font-size: 11px;
             color: #666;
             line-height: 1.4;
-            max-height: 80px;
-            overflow-y: auto;
+            max-height: none;
             font-style: italic;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
         }
 
         .tooltip-footer {
@@ -536,23 +538,21 @@
             bottom: 90px;
             right: 10px;
             background: white;
-            width: 34px;
-            height: 34px;
+            width: 40px;
+            height: 40px;
             border: 2px solid rgba(0,0,0,0.2);
-            border-radius: 4px;
+            border-radius: 2px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
             z-index: 1000;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
-            transition: all 0.3s;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: all 0.2s;
         }
 
         .geolocation-btn:hover {
             background: #f4f4f4;
-            transform: scale(1.05);
         }
 
         .geolocation-btn:active {
@@ -560,13 +560,70 @@
         }
 
         .geolocation-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+            background: #1a73e8;
         }
 
         .geolocation-btn.loading {
             animation: pulse 1.5s infinite;
+        }
+
+        /* Ícono de mirilla de francotirador */
+        .crosshair-icon {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .crosshair-icon::before,
+        .crosshair-icon::after {
+            content: '';
+            position: absolute;
+            background: #666;
+        }
+
+        /* Línea vertical */
+        .crosshair-icon::before {
+            width: 2px;
+            height: 24px;
+            left: 11px;
+            top: 0;
+        }
+
+        /* Línea horizontal */
+        .crosshair-icon::after {
+            width: 24px;
+            height: 2px;
+            left: 0;
+            top: 11px;
+        }
+
+        /* Círculo central */
+        .crosshair-circle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            top: 8px;
+            left: 8px;
+            background: transparent;
+        }
+
+        /* Cuando está activo, cambiar color a blanco */
+        .geolocation-btn.active .crosshair-icon::before,
+        .geolocation-btn.active .crosshair-icon::after,
+        .geolocation-btn.active .crosshair-circle {
+            background: white;
+            border-color: white;
+        }
+
+        .geolocation-btn.loading .crosshair-icon {
+            animation: rotate 1.5s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         @keyframes pulse {
@@ -600,7 +657,7 @@
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 3px;
+            bottom: 1px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -852,7 +909,9 @@
 
     <!-- Botón de geolocalización -->
     <button class="geolocation-btn" id="geolocation-btn" onclick="obtenerUbicacion()" title="Ir a mi ubicación">
-        📍
+        <div class="crosshair-icon">
+            <div class="crosshair-circle"></div>
+        </div>
     </button>
 
     <!-- Control deslizante de tiempo -->
@@ -979,11 +1038,6 @@
             const medio = props.medio || 'Desconocido';
             const actores = props.actores || 'N/A';
 
-            // Truncar contexto si es muy largo
-            const contextoCorto = contexto.length > 150 
-                ? contexto.substring(0, 150) + '...' 
-                : contexto;
-
             return `
                 <div class="tooltip-header">
                     📍 ${ubicacion}
@@ -998,7 +1052,7 @@
                         <span>${actores}</span>
                     </div>
                     <div class="tooltip-contexto">
-                        ${contextoCorto}
+                        ${contexto}
                     </div>
                     <div class="tooltip-footer">
                         <strong>Fuente:</strong> ${medio} • <strong>Fecha:</strong> ${fecha}
