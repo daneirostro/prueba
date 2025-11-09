@@ -421,15 +421,104 @@
             font-size: 14px;
             font-weight: 600;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
         .search-box button:hover {
             background: #5568d3;
         }
 
+        .search-box button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .search-box .clear-btn {
+            background: #e9ecef;
+            color: #333;
+            padding: 8px 12px;
+        }
+
+        .search-box .clear-btn:hover {
+            background: #d3d6da;
+        }
+
         .search-icon {
             font-size: 18px;
             color: #667eea;
+        }
+
+        /* Resultados de búsqueda */
+        .search-results {
+            position: absolute;
+            top: 155px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1001;
+            min-width: 350px;
+            max-width: 500px;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-results-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-results-close {
+            cursor: pointer;
+            font-size: 18px;
+            color: #999;
+        }
+
+        .search-results-close:hover {
+            color: #333;
+        }
+
+        .search-result-item {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-location {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .search-result-context {
+            color: #666;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .search-highlight {
+            background: #fff3cd;
+            font-weight: 600;
         }
 
         /* Controles de zoom personalizados */
@@ -444,7 +533,7 @@
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 10px;
+            bottom: 5px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -616,6 +705,14 @@
                 font-size: 12px;
             }
 
+            .search-results {
+                top: 145px;
+                min-width: calc(100% - 20px);
+                max-width: calc(100% - 20px);
+                left: 10px;
+                transform: none;
+            }
+
             .timeline-control {
                 min-width: calc(100% - 20px);
                 max-width: calc(100% - 20px);
@@ -657,8 +754,18 @@
     <!-- Caja de búsqueda -->
     <div class="search-box">
         <span class="search-icon">🔍</span>
-        <input type="text" id="search-input" placeholder="Buscar por ubicación, tipo de evento o fecha...">
-        <button onclick="alert('Función de búsqueda en desarrollo')">Buscar</button>
+        <input type="text" id="search-input" placeholder="Buscar por ubicación o contexto..." onkeypress="if(event.key==='Enter') realizarBusqueda()">
+        <button onclick="realizarBusqueda()">Buscar</button>
+        <button class="clear-btn" onclick="limpiarBusqueda()" title="Limpiar búsqueda">✕</button>
+    </div>
+
+    <!-- Resultados de búsqueda -->
+    <div class="search-results" id="search-results">
+        <div class="search-results-header">
+            <span id="search-results-count">0 resultados</span>
+            <span class="search-results-close" onclick="cerrarResultados()">✕</span>
+        </div>
+        <div id="search-results-list"></div>
     </div>
 
     <!-- Panel de control de capas -->
@@ -1027,6 +1134,118 @@
                 updateTimelineDisplay();
             });
         });
+
+        // Funciones de búsqueda
+        let searchResults = [];
+
+        function highlightText(text, query) {
+            if (!text || !query) return text;
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+
+        function realizarBusqueda() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            
+            if (query.length < 2) {
+                alert('Por favor ingresa al menos 2 caracteres para buscar');
+                return;
+            }
+
+            searchResults = [];
+            
+            // Buscar en todas las features
+            allFeatures.forEach((feature, index) => {
+                const ubicacion = (feature.properties.ubicacion || '').toLowerCase();
+                const contexto = (feature.properties.contexto || '').toLowerCase();
+                
+                // Verificar si hay coincidencia en ubicación o contexto
+                if (ubicacion.includes(query) || contexto.includes(query)) {
+                    searchResults.push({
+                        feature: feature,
+                        index: index,
+                        marker: feature.marker
+                    });
+                }
+            });
+
+            mostrarResultados(query);
+        }
+
+        function mostrarResultados(query) {
+            const resultsContainer = document.getElementById('search-results');
+            const resultsList = document.getElementById('search-results-list');
+            const resultsCount = document.getElementById('search-results-count');
+            
+            if (searchResults.length === 0) {
+                resultsCount.textContent = 'No se encontraron resultados';
+                resultsList.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">Intenta con otras palabras clave</div>';
+                resultsContainer.classList.add('active');
+                return;
+            }
+
+            resultsCount.textContent = `${searchResults.length} resultado${searchResults.length !== 1 ? 's' : ''}`;
+            
+            // Limitar a 10 resultados máximo
+            const maxResults = Math.min(searchResults.length, 10);
+            let html = '';
+            
+            for (let i = 0; i < maxResults; i++) {
+                const result = searchResults[i];
+                const props = result.feature.properties;
+                
+                const ubicacion = highlightText(props.ubicacion || 'Sin ubicación', query);
+                const contexto = props.contexto || 'Sin contexto';
+                const contextoCorto = contexto.length > 100 ? contexto.substring(0, 100) + '...' : contexto;
+                const contextoHighlight = highlightText(contextoCorto, query);
+                
+                html += `
+                    <div class="search-result-item" onclick="irAResultado(${i})">
+                        <div class="search-result-location">${ubicacion}</div>
+                        <div class="search-result-context">${contextoHighlight}</div>
+                    </div>
+                `;
+            }
+            
+            if (searchResults.length > 10) {
+                html += `<div style="padding: 8px; text-align: center; color: #999; font-size: 11px;">Mostrando los primeros 10 de ${searchResults.length} resultados</div>`;
+            }
+            
+            resultsList.innerHTML = html;
+            resultsContainer.classList.add('active');
+        }
+
+        function irAResultado(index) {
+            if (!searchResults[index]) return;
+            
+            const result = searchResults[index];
+            const coords = result.feature.geometry.coordinates;
+            const marker = result.marker;
+            
+            // Centrar el mapa en el resultado
+            map.setView([coords[1], coords[0]], 16, {
+                animate: true,
+                duration: 0.5
+            });
+            
+            // Abrir el tooltip del marcador
+            setTimeout(() => {
+                marker.openTooltip();
+            }, 500);
+            
+            // Opcional: cerrar resultados después de seleccionar
+            // cerrarResultados();
+        }
+
+        function limpiarBusqueda() {
+            document.getElementById('search-input').value = '';
+            searchResults = [];
+            cerrarResultados();
+        }
+
+        function cerrarResultados() {
+            document.getElementById('search-results').classList.remove('active');
+        }
 
         // Función para crear el panel de control
         function createLayerControl() {
