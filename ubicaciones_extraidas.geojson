@@ -6,8 +6,8 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.1233895,
-                    -11.8356467
+                    -76.9619322,
+                    -12.0760996
                 ]
             },
             "properties": {
@@ -17,7 +17,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": "1"
+                "id_fila": 1
             }
         },
         {
@@ -36,7 +36,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": "1"
+                "id_fila": 1
             }
         },
         {
@@ -51,11 +51,30 @@
             "properties": {
                 "ubicacion": "Lima",
                 "tipo_evento": "protesta",
-                "actores": "",
+                "actores": null,
                 "contexto": "Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": "2"
+                "id_fila": 2
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -74.2256973,
+                    -13.1604269
+                ]
+            },
+            "properties": {
+                "ubicacion": "Ayacucho",
+                "tipo_evento": "otro",
+                "actores": null,
+                "contexto": "Ordenan inicio de juicio oral contra tres militares en Ayacucho por crimen de lesa humanidad cometido en 1985",
+                "fecha": "Fecha no encontrada",
+                "medio": "La República",
+                "id_fila": 3
             }
         }
     ]
