@@ -530,10 +530,77 @@
             left: auto !important;
         }
 
+        /* Botón de geolocalización */
+        .geolocation-btn {
+            position: absolute;
+            bottom: 90px;
+            right: 10px;
+            background: white;
+            width: 34px;
+            height: 34px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            z-index: 1000;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .geolocation-btn:hover {
+            background: #f4f4f4;
+            transform: scale(1.05);
+        }
+
+        .geolocation-btn:active {
+            background: #e8e8e8;
+        }
+
+        .geolocation-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .geolocation-btn.loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Marcador de ubicación del usuario */
+        .user-location-marker {
+            background: #667eea;
+            border: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            animation: locationPulse 2s infinite;
+        }
+
+        @keyframes locationPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+            }
+        }
+
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 5px;
+            bottom: 3px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -783,6 +850,11 @@
     
     <div id="map"></div>
 
+    <!-- Botón de geolocalización -->
+    <button class="geolocation-btn" id="geolocation-btn" onclick="obtenerUbicacion()" title="Ir a mi ubicación">
+        📍
+    </button>
+
     <!-- Control deslizante de tiempo -->
     <div class="timeline-control">
         <div class="timeline-header">
@@ -840,6 +912,7 @@
         let minDate, maxDate;
         let isPlaying = false;
         let playInterval;
+        let userLocationMarker = null; // Marcador de ubicación del usuario
 
         // Configuración de tipos de eventos
         const eventTypes = {
@@ -1245,6 +1318,118 @@
 
         function cerrarResultados() {
             document.getElementById('search-results').classList.remove('active');
+        }
+
+        // Función de geolocalización
+        function obtenerUbicacion() {
+            const btn = document.getElementById('geolocation-btn');
+            
+            // Verificar si el navegador soporta geolocalización
+            if (!navigator.geolocation) {
+                alert('Tu navegador no soporta geolocalización');
+                return;
+            }
+
+            // Añadir estado de carga
+            btn.classList.add('loading');
+            btn.title = 'Obteniendo ubicación...';
+
+            navigator.geolocation.getCurrentPosition(
+                // Éxito
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+
+                    // Remover marcador anterior si existe
+                    if (userLocationMarker) {
+                        map.removeLayer(userLocationMarker);
+                    }
+
+                    // Crear ícono personalizado para la ubicación del usuario
+                    const userIcon = L.divIcon({
+                        className: 'custom-div-icon',
+                        html: '<div class="user-location-marker"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+
+                    // Crear marcador de ubicación del usuario
+                    userLocationMarker = L.marker([lat, lng], { icon: userIcon })
+                        .addTo(map)
+                        .bindTooltip(`
+                            <div style="padding: 8px;">
+                                <strong>📍 Tu ubicación</strong><br>
+                                <small>Precisión: ±${Math.round(accuracy)} metros</small>
+                            </div>
+                        `, {
+                            permanent: false,
+                            direction: 'top'
+                        });
+
+                    // Centrar el mapa en la ubicación del usuario
+                    map.setView([lat, lng], 15, {
+                        animate: true,
+                        duration: 1
+                    });
+
+                    // Añadir círculo de precisión
+                    L.circle([lat, lng], {
+                        radius: accuracy,
+                        color: '#667eea',
+                        fillColor: '#667eea',
+                        fillOpacity: 0.1,
+                        weight: 1
+                    }).addTo(map);
+
+                    // Actualizar botón
+                    btn.classList.remove('loading');
+                    btn.classList.add('active');
+                    btn.title = 'Ubicación actual';
+
+                    // Mostrar notificación
+                    const statusMsg = document.getElementById('status-message');
+                    statusMsg.innerHTML = `
+                        <strong>✅ Ubicación detectada</strong><br>
+                        <small>Lat: ${lat.toFixed(5)}, Lng: ${lng.toFixed(5)}</small>
+                    `;
+                    statusMsg.style.display = 'block';
+                    setTimeout(() => {
+                        statusMsg.style.display = 'none';
+                    }, 3000);
+                },
+                // Error
+                function(error) {
+                    btn.classList.remove('loading');
+                    btn.title = 'Error al obtener ubicación';
+
+                    let mensaje = 'No se pudo obtener tu ubicación';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            mensaje = 'Permiso de ubicación denegado. Por favor habilítalo en la configuración de tu navegador.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            mensaje = 'Información de ubicación no disponible';
+                            break;
+                        case error.TIMEOUT:
+                            mensaje = 'Tiempo de espera agotado al obtener ubicación';
+                            break;
+                    }
+
+                    const errorMsg = document.getElementById('error-message');
+                    errorMsg.innerHTML = `❌ ${mensaje}`;
+                    errorMsg.style.display = 'block';
+                    setTimeout(() => {
+                        errorMsg.style.display = 'none';
+                    }, 5000);
+                },
+                // Opciones
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
         }
 
         // Función para crear el panel de control
