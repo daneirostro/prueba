@@ -626,6 +626,126 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Botón de pantalla completa */
+        .fullscreen-btn {
+            position: absolute;
+            bottom: 140px;
+            right: 10px;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .fullscreen-btn:hover {
+            background: #f4f4f4;
+        }
+
+        .fullscreen-btn:active {
+            background: #e8e8e8;
+        }
+
+        /* Ícono de pantalla completa */
+        .fullscreen-icon {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Esquinas del ícono */
+        .fullscreen-corner {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border: 2px solid #666;
+        }
+
+        .fullscreen-corner.top-left {
+            top: 0;
+            left: 0;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .fullscreen-corner.top-right {
+            top: 0;
+            right: 0;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .fullscreen-corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-right: none;
+            border-top: none;
+        }
+
+        .fullscreen-corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Ícono para salir de pantalla completa (flechas hacia dentro) */
+        .fullscreen-btn.active .fullscreen-corner.top-left {
+            top: 0;
+            left: 0;
+            border-left: none;
+            border-top: none;
+            border-right: 2px solid #666;
+            border-bottom: 2px solid #666;
+        }
+
+        .fullscreen-btn.active .fullscreen-corner.top-right {
+            top: 0;
+            right: 0;
+            border-right: none;
+            border-top: none;
+            border-left: 2px solid #666;
+            border-bottom: 2px solid #666;
+        }
+
+        .fullscreen-btn.active .fullscreen-corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-left: none;
+            border-bottom: none;
+            border-right: 2px solid #666;
+            border-top: 2px solid #666;
+        }
+
+        .fullscreen-btn.active .fullscreen-corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-right: none;
+            border-bottom: none;
+            border-left: 2px solid #666;
+            border-top: 2px solid #666;
+        }
+
+        /* Ajustes cuando está en fullscreen */
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+
+        body.fullscreen-mode #map {
+            height: 100vh;
+        }
+
+        body.fullscreen-mode header {
+            display: none;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
@@ -911,6 +1031,16 @@
     <button class="geolocation-btn" id="geolocation-btn" onclick="obtenerUbicacion()" title="Ir a mi ubicación">
         <div class="crosshair-icon">
             <div class="crosshair-circle"></div>
+        </div>
+    </button>
+
+    <!-- Botón de pantalla completa -->
+    <button class="fullscreen-btn" id="fullscreen-btn" onclick="toggleFullscreen()" title="Pantalla completa">
+        <div class="fullscreen-icon">
+            <div class="fullscreen-corner top-left"></div>
+            <div class="fullscreen-corner top-right"></div>
+            <div class="fullscreen-corner bottom-left"></div>
+            <div class="fullscreen-corner bottom-right"></div>
         </div>
     </button>
 
