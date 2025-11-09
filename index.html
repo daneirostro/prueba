@@ -1392,6 +1392,76 @@
             });
         });
 
+        // Función de pantalla completa (debe estar en el scope global)
+        function toggleFullscreen() {
+            const btn = document.getElementById('fullscreen-btn');
+            
+            if (!document.fullscreenElement && 
+                !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement && 
+                !document.msFullscreenElement) {
+                
+                // Entrar en modo fullscreen
+                const elem = document.documentElement;
+                
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.error('Error al activar fullscreen:', err);
+                    });
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) {
+                    elem.mozRequestFullScreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+
+            } else {
+                // Salir de modo fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Detectar cuando el usuario entra o sale de fullscreen
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            const btn = document.getElementById('fullscreen-btn');
+            
+            const isInFullscreen = document.fullscreenElement || 
+                                   document.webkitFullscreenElement || 
+                                   document.mozFullScreenElement || 
+                                   document.msFullscreenElement;
+            
+            if (isInFullscreen) {
+                // Está en fullscreen
+                btn.classList.add('active');
+                btn.title = 'Salir de pantalla completa (ESC)';
+                document.body.classList.add('fullscreen-mode');
+            } else {
+                // Salió de fullscreen
+                btn.classList.remove('active');
+                btn.title = 'Pantalla completa';
+                document.body.classList.remove('fullscreen-mode');
+            }
+            
+            // Ajustar el mapa
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
         // Funciones de búsqueda
         let searchResults = [];
 
