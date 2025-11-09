@@ -17,7 +17,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": 1
+                "id_fila": "1"
             }
         },
         {
@@ -36,7 +36,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": 1
+                "id_fila": "1"
             }
         },
         {
@@ -51,11 +51,11 @@
             "properties": {
                 "ubicacion": "Lima",
                 "tipo_evento": "protesta",
-                "actores": null,
+                "actores": "",
                 "contexto": "Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 2
+                "id_fila": "2"
             }
         }
     ]
