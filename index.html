@@ -91,6 +91,7 @@
         .leaflet-tooltip {
             z-index: 9999 !important;
             position: relative !important;
+            pointer-events: auto !important; /* Permitir interacción con el tooltip */
         }
 
         .custom-tooltip {
@@ -104,6 +105,7 @@
             max-width: 350px;
             z-index: 9999 !important;
             position: relative !important;
+            pointer-events: auto !important; /* Permitir clicks en el tooltip */
         }
 
         /* Flecha del tooltip apuntando hacia el marcador (izquierda) */
@@ -111,6 +113,17 @@
             border-right-color: white !important;
             left: -7px !important;
             border-width: 8px 8px 8px 0 !important;
+        }
+
+        /* Hacer enlaces clicables en tooltips */
+        .custom-tooltip a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .custom-tooltip a:hover {
+            text-decoration: underline;
         }
 
         .tooltip-header {
@@ -431,7 +444,7 @@
         /* Control deslizante de tiempo */
         .timeline-control {
             position: absolute;
-            bottom: 20px;
+            bottom: 10px;
             left: 10px;
             background: white;
             padding: 15px 20px;
@@ -1086,13 +1099,36 @@
                         { icon: crearIcono(tipoOriginal) }
                     );
                     
-                    // Usar tooltip en lugar de popup - proyectado hacia la derecha
-                    marker.bindTooltip(crearTooltip(feature.properties), {
+                    // Crear tooltip con interactividad
+                    const tooltip = L.tooltip({
                         className: 'custom-tooltip',
-                        direction: 'right',  // Proyectar hacia la derecha
-                        offset: [15, 0],     // Separación desde el marcador
+                        direction: 'right',
+                        offset: [15, 0],
                         opacity: 1,
-                        permanent: false
+                        permanent: false,
+                        interactive: true  // Permitir interacción con el tooltip
+                    }).setContent(crearTooltip(feature.properties));
+                    
+                    marker.bindTooltip(tooltip);
+                    
+                    // Mantener tooltip abierto cuando el cursor está sobre él
+                    marker.on('mouseover', function() {
+                        this.openTooltip();
+                    });
+                    
+                    // No cerrar inmediatamente el tooltip
+                    marker.on('mouseout', function(e) {
+                        const tooltipElement = e.target.getTooltip().getElement();
+                        if (tooltipElement) {
+                            // Verificar si el cursor está sobre el tooltip
+                            tooltipElement.addEventListener('mouseenter', () => {
+                                e.target.openTooltip();
+                            });
+                            
+                            tooltipElement.addEventListener('mouseleave', () => {
+                                e.target.closeTooltip();
+                            });
+                        }
                     });
                     
                     // Guardar referencia del marker en la feature
