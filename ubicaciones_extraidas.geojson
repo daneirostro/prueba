@@ -6,18 +6,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -76.2523769,
-                    -13.2895997
+                    -77.1257849,
+                    -11.8395912
                 ]
             },
             "properties": {
-                "ubicacion": "Av. Arequipa",
+                "ubicacion": "Perú",
                 "tipo_evento": "accidente",
-                "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
-                "fecha": "15 de marzo de 2024",
-                "medio": "El Comercio",
+                "contexto": "Corpac anuncia suspensión de vuelos en el aeropuerto de Pisco debido a tormenta de arena\r\nMunicipalidad de Lima ampliará la avenida Nicolás Ayllón y cerrará la Carretera Central de manera temporal: plan de desvío\r\nEl Instituto Nacional Penitenciario (INPE) reporta que de enero a octubre de 2023 hubo 23.213 denuncias por extorsión en Perú, evidenciando una crisis en el sistema penal.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 1
+                "id_fila": "5-1"
             }
         },
         {
@@ -25,227 +25,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.1233895,
-                    -11.8356467
+                    -77.1279322,
+                    -11.8769563
                 ]
             },
             "properties": {
-                "ubicacion": "Av. Javier Prado",
+                "ubicacion": "Municipalidad de Lima",
                 "tipo_evento": "accidente",
-                "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
-                "fecha": "15 de marzo de 2024",
-                "medio": "El Comercio",
+                "contexto": "Corpac anuncia suspensión de vuelos en el aeropuerto de Pisco debido a tormenta de arena\r\nMunicipalidad de Lima ampliará la avenida Nicolás Ayllón y cerrará la Carretera Central de manera temporal: plan de desvío\r\nEl Instituto Nacional Penitenciario (INPE) reporta que de enero a octubre de 2023 hubo 23.213 denuncias por extorsión en Perú, evidenciando una crisis en el sistema penal.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 1
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.0305912,
-                    -12.0459808
-                ]
-            },
-            "properties": {
-                "ubicacion": "Lima",
-                "tipo_evento": "protesta",
-                "contexto": "Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 2
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.621572,
-                    -13.2220319
-                ]
-            },
-            "properties": {
-                "ubicacion": "Chungui",
-                "tipo_evento": "delito",
-                "contexto": "\"08 Nov 2025 | 23:55 h\nOrdenan inicio de juicio oral contra tres militares en Ayacucho por crimen de lesa humanidad cometido en 1985\nWilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes, miembros de las Fuerzas Armadas, son acusados de haber ejecutado extrajudicialmente a toda una familia: un padre, una madre y sus cuatro hijos en la zona de Chungui.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.7770281,
-                    -13.0223893
-                ]
-            },
-            "properties": {
-                "ubicacion": "provincia de La Mar",
-                "tipo_evento": "delito",
-                "contexto": "Luego, fueron enterradas a 190 metros aproximadamente de la base militar de Chungui, zona conocida como Chuschihuaycco, en la provincia de La Mar.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -74.2249548,
-                    -13.1674972
-                ]
-            },
-            "properties": {
-                "ubicacion": "Ica",
-                "tipo_evento": "delito",
-                "contexto": "Elvin, en 1995, tras vivir en Ica y convertirse en ingeniero agrónomo, volvió a Chungui y se reencontró con su madre.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -74.2256973,
-                    -13.1604269
-                ]
-            },
-            "properties": {
-                "ubicacion": "Ayacucho",
-                "tipo_evento": "delito",
-                "contexto": "\"08 Nov 2025 | 23:55 h\nOrdenan inicio de juicio oral contra tres militares en Ayacucho por crimen de lesa humanidad cometido en 1985\nWilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes, miembros de las Fuerzas Armadas, son acusados de haber ejecutado extrajudicialmente a toda una familia: un padre, una madre y sus cuatro hijos en la zona de Chungui.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -74.5236748,
-                    -13.5716203
-                ]
-            },
-            "properties": {
-                "ubicacion": "México",
-                "tipo_evento": "delito",
-                "contexto": "Gobierno alarga salvoconducto a Betssy Chávez y planea modificar Convención de Caracas\nSalvoconducto de Betssy Chávez EN VIVO: José Jerí decidirá HOY si otorga documento para que exministra viaje a México\n\nTras sustentar su investigación y pedido de 20 años de prisión, la Cuarta Fiscalía Penal Supraprovincial Especializada en Derechos Humanos y contra el Terrorismo de Ayacucho logró que se dictara el inicio del juicio oral contra los militares Wilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -73.9040554,
-                    -13.8008867
-                ]
-            },
-            "properties": {
-                "ubicacion": "Accomarca",
-                "tipo_evento": "delito",
-                "contexto": "El más mediático es el general del Ejército en retiro Wilfredo Mori, quien fue condenado en el 2016 como autor mediato por la masacre de 69 comuneros de Accomarca en 1985.",
-                "fecha": "08 Nov 2025",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 3
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.0458829,
-                    -12.0588096
-                ]
-            },
-            "properties": {
-                "ubicacion": "Breña",
-                "tipo_evento": "delito",
-                "contexto": "VER:\r\nHabla cuñada de mujer que asesinó a su esposo en Breña y confiesa que se iba a cometer doble crimen\r\nlr.pe\r\nPolicía captura a presuntos asesinos de madre e hija en SJL\r\nHoras después del doble asesinato en SJL, la Policía Nacional del Perú (PNP) anunció la detención de los presuntos responsables.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 4
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.0338629,
-                    -12.0670683
-                ]
-            },
-            "properties": {
-                "ubicacion": "Estadio Nacional",
-                "tipo_evento": "delito",
-                "contexto": "PUEDES VER:\r\nPresuntos barristas de Universitario y Sporting Cristal se enfrentan con pirotécnicos cerca del Estadio Nacional\r\nlr.pe\r\nImágenes revelan asesinato de madre e hija\r\nLas imágenes muestran la secuencia completa del ataque perpetrado por tres delincuentes encapuchados.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 4
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -76.9818407,
-                    -11.9418057
-                ]
-            },
-            "properties": {
-                "ubicacion": "Canto Grande",
-                "tipo_evento": "delito",
-                "contexto": "Durante su detención en la avenida Canto Grande, los efectivos incautaron los teléfonos celulares pertenecientes a las víctimas, lo que confirmó su participación.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 4
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.0036013,
-                    -11.9662205
-                ]
-            },
-            "properties": {
-                "ubicacion": "Hospital de Canto Grande",
-                "tipo_evento": "delito",
-                "contexto": "La madre fue trasladada de urgencia al Hospital de Canto Grande, pero el parte policial confirmó que llegó sin vida al nosocomio.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-2"
             }
         },
         {
@@ -259,12 +50,12 @@
             },
             "properties": {
                 "ubicacion": "Callao",
-                "tipo_evento": "delito",
-                "contexto": "El violento asalto ocurrió en plena madrugada, durante el segundo día del estado de emergencia en Lima y Callao.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "tipo_evento": "accidente",
+                "contexto": "PUEDES VER:\r\nCasos de extorsión aumentan, pero condenas se estacan: PJ solo registra 4 sentencias a bandas criminales en Lima y ninguna en Callao\r\nlr.pe\r\nRespuesta ineficiente de las autoridades\r\nEl exministro del Interior Wilfredo Pedraza considera que el país enfrenta un fenómeno de extorsión “que crece de manera sostenida” y frente al cual el sistema de justicia “responde de modo pasivo”.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-3"
             }
         },
         {
@@ -272,37 +63,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.0084106,
-                    -12.0017252
-                ]
-            },
-            "properties": {
-                "ubicacion": "San Juan de Lurigancho",
-                "tipo_evento": "delito",
-                "contexto": "Cámaras de seguridad revelan el momento exacto del ataque a madre e hija en San Juan de Lurigancho\r\nLa Policía detuvo a los tres sospechosos del crimen.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
-                "enlace": "",
-                "id_fila": 4
-            }
-        },
-        {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [
-                    -77.0305912,
-                    -12.0459808
+                    -77.1257849,
+                    -11.8395912
                 ]
             },
             "properties": {
                 "ubicacion": "Lima",
-                "tipo_evento": "delito",
-                "contexto": "El violento asalto ocurrió en plena madrugada, durante el segundo día del estado de emergencia en Lima y Callao.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "tipo_evento": "accidente",
+                "contexto": "En paralelo, las cifras del SINADEF muestran que, hasta el 4 de noviembre, se han contabilizado 1.895 homicidios en todo el país, 129 de ellos ocurridos durante el actual gobierno de José Jerí, con Lima (39) y Huaura (10) como las provincias más violentas.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-4"
             }
         },
         {
@@ -310,18 +82,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.0140273,
-                    -12.0189663
+                    -77.1043906,
+                    -12.0329533
                 ]
             },
             "properties": {
-                "ubicacion": "avenida Canto Grande",
-                "tipo_evento": "delito",
-                "contexto": "Durante su detención en la avenida Canto Grande, los efectivos incautaron los teléfonos celulares pertenecientes a las víctimas, lo que confirmó su participación.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "ubicacion": "aeropuerto de Pisco",
+                "tipo_evento": "accidente",
+                "contexto": "Corpac anuncia suspensión de vuelos en el aeropuerto de Pisco debido a tormenta de arena\r\nMunicipalidad de Lima ampliará la avenida Nicolás Ayllón y cerrará la Carretera Central de manera temporal: plan de desvío\r\nEl Instituto Nacional Penitenciario (INPE) reporta que de enero a octubre de 2023 hubo 23.213 denuncias por extorsión en Perú, evidenciando una crisis en el sistema penal.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-5"
             }
         },
         {
@@ -329,18 +101,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -76.9365282,
-                    -12.14281
+                    -77.1281408,
+                    -11.8700722
                 ]
             },
             "properties": {
-                "ubicacion": "calle Almirante Miguel Grau",
-                "tipo_evento": "delito",
-                "contexto": "La Policía intervino un segundo domicilio en la calle Almirante Miguel Grau, donde detuvieron a los menores de edad de 17 y 16 años.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "ubicacion": "Ministerio Público",
+                "tipo_evento": "accidente",
+                "contexto": "Lo que sucede allí es consecuencia de lo que pasa en el poder judicial, el Ministerio Público y la Policía Nacional”, explicó.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-6"
             }
         },
         {
@@ -348,18 +120,18 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.0106135,
-                    -11.991137
+                    -77.1153891,
+                    -12.056405
                 ]
             },
             "properties": {
-                "ubicacion": "La Huayrona",
-                "tipo_evento": "delito",
-                "contexto": "Un adulto y dos menores fueron capturados en La Huayrona tras recuperar los teléfonos de las víctimas.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "ubicacion": "Poder Judicial",
+                "tipo_evento": "accidente",
+                "contexto": "“Mientras no se depure a la policía, al Ministerio Público y al Poder Judicial de funcionarios corruptos, no habrá resultados.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-7"
             }
         },
         {
@@ -367,18 +139,37 @@
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    -77.0084106,
-                    -12.0017252
+                    -61.8307108,
+                    7.3150292
                 ]
             },
             "properties": {
-                "ubicacion": "SJL",
-                "tipo_evento": "delito",
-                "contexto": "Extorsionadores amenazan a padres de colegio en SJL con atentar contra sus hijos si no pagan cupo: clases fueron suspendidas\r\nPolicía captura a presuntos asesinos de madre e hija en San Juan de Lurigancho: dos menores y un adulto detenidos tras crimen\r\nTres sujetos asesinaron a Diana Harter Portilla y su hija Liyzy Espinoza Harter.",
-                "fecha": "Fecha no encontrada",
-                "medio": "La República",
+                "ubicacion": "Estado",
+                "tipo_evento": "accidente",
+                "contexto": "El panorama, advierten especialistas y exautoridades del sector, confirma un colapso institucional que impacta en la seguridad ciudadana y en la capacidad del Estado para sancionar la criminalidad organizada.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
                 "enlace": "",
-                "id_fila": 4
+                "id_fila": "5-8"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -77.1063163,
+                    -12.0668306
+                ]
+            },
+            "properties": {
+                "ubicacion": "Huaura",
+                "tipo_evento": "accidente",
+                "contexto": "En paralelo, las cifras del SINADEF muestran que, hasta el 4 de noviembre, se han contabilizado 1.895 homicidios en todo el país, 129 de ellos ocurridos durante el actual gobierno de José Jerí, con Lima (39) y Huaura (10) como las provincias más violentas.",
+                "fecha": "06 Nov 2025",
+                "medio": "mercurio",
+                "enlace": "",
+                "id_fila": "5-9"
             }
         }
     ]
