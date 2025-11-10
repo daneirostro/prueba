@@ -17,7 +17,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": 1
+                "id_fila": "1"
             }
         },
         {
@@ -36,7 +36,7 @@
                 "contexto": "El 15 de marzo de 2024 ocurrió un accidente en la Av. Arequipa con Av. Javier Prado",
                 "fecha": "15 de marzo de 2024",
                 "medio": "El Comercio",
-                "id_fila": 1
+                "id_fila": "1"
             }
         },
         {
@@ -51,11 +51,11 @@
             "properties": {
                 "ubicacion": "Lima",
                 "tipo_evento": "protesta",
-                "actores": null,
+                "actores": "",
                 "contexto": "Protesta el 20 de marzo en la Plaza San Martín del Centro de Lima",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 2
+                "id_fila": "2"
             }
         },
         {
@@ -70,11 +70,11 @@
             "properties": {
                 "ubicacion": "México",
                 "tipo_evento": "delito",
-                "actores": null,
+                "actores": "",
                 "contexto": "Gobierno alarga salvoconducto a Betssy Chávez y planea modificar Convención de Caracas\nSalvoconducto de Betssy Chávez EN VIVO: José Jerí decidirá HOY si otorga documento para que exministra viaje a México\n\nTras sustentar su investigación y pedido de 20 años de prisión, la Cuarta Fiscalía Penal Supraprovincial Especializada en Derechos Humanos y contra el Terrorismo de Ayacucho logró que se dictara el inicio del juicio oral contra los militares Wilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         },
         {
@@ -93,7 +93,7 @@
                 "contexto": "\"08 Nov 2025 | 23:55 h\nOrdenan inicio de juicio oral contra tres militares en Ayacucho por crimen de lesa humanidad cometido en 1985\nWilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes, miembros de las Fuerzas Armadas, son acusados de haber ejecutado extrajudicialmente a toda una familia: un padre, una madre y sus cuatro hijos en la zona de Chungui.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         },
         {
@@ -108,11 +108,11 @@
             "properties": {
                 "ubicacion": "Accomarca",
                 "tipo_evento": "delito",
-                "actores": null,
+                "actores": "",
                 "contexto": "El más mediático es el general del Ejército en retiro Wilfredo Mori, quien fue condenado en el 2016 como autor mediato por la masacre de 69 comuneros de Accomarca en 1985.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         },
         {
@@ -131,7 +131,7 @@
                 "contexto": "\"08 Nov 2025 | 23:55 h\nOrdenan inicio de juicio oral contra tres militares en Ayacucho por crimen de lesa humanidad cometido en 1985\nWilfredo Mori Orzo, Said Amand Pinedo y Félix Neri Aguilar Reyes, miembros de las Fuerzas Armadas, son acusados de haber ejecutado extrajudicialmente a toda una familia: un padre, una madre y sus cuatro hijos en la zona de Chungui.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         },
         {
@@ -146,11 +146,11 @@
             "properties": {
                 "ubicacion": "provincia de La Mar",
                 "tipo_evento": "delito",
-                "actores": null,
+                "actores": "",
                 "contexto": "Luego, fueron enterradas a 190 metros aproximadamente de la base militar de Chungui, zona conocida como Chuschihuaycco, en la provincia de La Mar.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         },
         {
@@ -169,7 +169,7 @@
                 "contexto": "Elvin, en 1995, tras vivir en Ica y convertirse en ingeniero agrónomo, volvió a Chungui y se reencontró con su madre.",
                 "fecha": "Fecha no encontrada",
                 "medio": "La República",
-                "id_fila": 3
+                "id_fila": "3"
             }
         }
     ]
