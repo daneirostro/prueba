@@ -6,27 +6,9 @@
     <title>Mapa de Noticias - Lima, Perú</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css" />
-    <link rel="stylesheet" href="./styles.css" />
-    
-    <style>
-        /* Estilos de emergencia si no carga el CSS */
-        body { margin: 0; font-family: sans-serif; }
-        #map { width: 100%; height: 100vh; }
-        #loading { 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2); 
-            z-index: 10000; 
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
     <header>
@@ -153,7 +135,7 @@
     </div>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
-    <script src="./app.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
