@@ -560,29 +560,43 @@ fetch(geoJsonUrl)
             
             marker.bindTooltip(tooltip);
             
-            let tooltipTimeout;
+            // Control mejorado de apertura/cierre del tooltip
+            let isTooltipHovered = false;
+            let closeTimeout = null;
+            
             marker.on('mouseover', function() {
-                clearTimeout(tooltipTimeout);
+                clearTimeout(closeTimeout);
                 this.openTooltip();
             });
             
-            marker.on('mouseout', function() {
-                tooltipTimeout = setTimeout(() => {
-                    const tooltipElement = this.getTooltip().getElement();
-                    if (tooltipElement && !tooltipElement.matches(':hover')) {
+            marker.on('mouseout', function(e) {
+                closeTimeout = setTimeout(() => {
+                    if (!isTooltipHovered) {
                         this.closeTooltip();
                     }
-                }, 200);
+                }, 300);
             });
             
-            marker.on('add', function() {
+            // Configurar eventos del tooltip después de que se renderice
+            marker.on('tooltipopen', function() {
                 setTimeout(() => {
                     const tooltipElement = this.getTooltip().getElement();
                     if (tooltipElement) {
-                        tooltipElement.addEventListener('mouseenter', () => clearTimeout(tooltipTimeout));
-                        tooltipElement.addEventListener('mouseleave', () => this.closeTooltip());
+                        tooltipElement.addEventListener('mouseenter', function() {
+                            isTooltipHovered = true;
+                            clearTimeout(closeTimeout);
+                        });
+                        
+                        tooltipElement.addEventListener('mouseleave', function() {
+                            isTooltipHovered = false;
+                            marker.closeTooltip();
+                        });
                     }
-                }, 100);
+                }, 50);
+            });
+            
+            marker.on('tooltipclose', function() {
+                isTooltipHovered = false;
             });
             
             feature.marker = marker;
