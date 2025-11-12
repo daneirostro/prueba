@@ -1,3 +1,4 @@
+
 // Inicializar mapa
 const map = L.map('map', { zoomControl: false }).setView([-12.0464, -77.0428], 12);
 
@@ -560,43 +561,53 @@ fetch(geoJsonUrl)
             
             marker.bindTooltip(tooltip);
             
-            // Control mejorado de apertura/cierre del tooltip
-            let isTooltipHovered = false;
-            let closeTimeout = null;
+            // Variables de control para cada marcador
+            marker._tooltipTimer = null;
+            marker._isTooltipHovered = false;
+            marker._isMarkerHovered = false;
             
+            // Función para verificar si debe cerrar el tooltip
+            const checkCloseTooltip = function() {
+                if (!marker._isMarkerHovered && !marker._isTooltipHovered) {
+                    marker.closeTooltip();
+                }
+            };
+            
+            // Mouse entra al marcador
             marker.on('mouseover', function() {
-                clearTimeout(closeTimeout);
+                marker._isMarkerHovered = true;
+                clearTimeout(marker._tooltipTimer);
                 this.openTooltip();
             });
             
-            marker.on('mouseout', function(e) {
-                closeTimeout = setTimeout(() => {
-                    if (!isTooltipHovered) {
-                        this.closeTooltip();
-                    }
-                }, 300);
+            // Mouse sale del marcador
+            marker.on('mouseout', function() {
+                marker._isMarkerHovered = false;
+                marker._tooltipTimer = setTimeout(checkCloseTooltip, 200);
             });
             
-            // Configurar eventos del tooltip después de que se renderice
+            // Cuando el tooltip se abre, agregar eventos
             marker.on('tooltipopen', function() {
-                setTimeout(() => {
-                    const tooltipElement = this.getTooltip().getElement();
-                    if (tooltipElement) {
-                        tooltipElement.addEventListener('mouseenter', function() {
-                            isTooltipHovered = true;
-                            clearTimeout(closeTimeout);
-                        });
-                        
-                        tooltipElement.addEventListener('mouseleave', function() {
-                            isTooltipHovered = false;
-                            marker.closeTooltip();
-                        });
-                    }
-                }, 50);
+                const tooltipEl = this.getTooltip().getElement();
+                if (!tooltipEl) return;
+                
+                // Usar el método setAttribute para forzar el comportamiento
+                tooltipEl.onmouseenter = function() {
+                    marker._isTooltipHovered = true;
+                    clearTimeout(marker._tooltipTimer);
+                };
+                
+                tooltipEl.onmouseleave = function() {
+                    marker._isTooltipHovered = false;
+                    marker._tooltipTimer = setTimeout(checkCloseTooltip, 100);
+                };
             });
             
+            // Limpiar al cerrar
             marker.on('tooltipclose', function() {
-                isTooltipHovered = false;
+                marker._isTooltipHovered = false;
+                marker._isMarkerHovered = false;
+                clearTimeout(marker._tooltipTimer);
             });
             
             feature.marker = marker;
